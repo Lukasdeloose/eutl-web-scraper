@@ -20,9 +20,9 @@ public class EUTLSeleniumTest {
     public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","EU","FI","FR","DE","GR","HU",
                                             "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
                                             "SK","SI","ES","SE","GB"};
-    public static String PERIOD_0_HEADER = "Country\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2005\t2006\t2007\tStatus";
-    public static String PERIOD_1_HEADER = "Country\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2008\t2009\t2010\t2011\t2012\tStatus";
-    public static String PERIOD_2_HEADER = "Country\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2013\t2014\t2015\t2016\t2017\t2018\t2019\t2020\tStatus";
+    public static String PERIOD_0_HEADER = "Country\tInstallation ID\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2005\t2006\t2007\tStatus";
+    public static String PERIOD_1_HEADER = "Country\tInstallation ID\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2008\t2009\t2010\t2011\t2012\tStatus";
+    public static String PERIOD_2_HEADER = "Country\tInstallation ID\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2013\t2014\t2015\t2016\t2017\t2018\t2019\t2020\tStatus";
 
 
 
@@ -106,7 +106,7 @@ public class EUTLSeleniumTest {
 
                                     List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
 
-                                    for(int columnCounter=1; columnCounter< td_collection.size()-1;columnCounter++)
+                                    for(int columnCounter=0; columnCounter< td_collection.size()-1;columnCounter++)
                                     {
 
                                         WebElement tdElement = td_collection.get(columnCounter);
@@ -137,7 +137,7 @@ public class EUTLSeleniumTest {
 
 
 
-                                    for(int columnCounter=1; columnCounter< td_collection.size()-1;columnCounter++)
+                                    for(int columnCounter=0; columnCounter< td_collection.size()-1;columnCounter++)
                                     {
 
                                         WebElement tdElement = td_collection.get(columnCounter);
@@ -164,7 +164,7 @@ public class EUTLSeleniumTest {
                                     List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
                                     //System.out.println("NUMBER OF COLUMNS="+td_collection.size());
 
-                                    for(int columnCounter=1; columnCounter< td_collection.size()-1;columnCounter++)
+                                    for(int columnCounter=0; columnCounter< td_collection.size()-1;columnCounter++)
                                     {
 
                                         WebElement tdElement = td_collection.get(columnCounter);
