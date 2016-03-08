@@ -30,20 +30,18 @@ public class EUTLSeleniumTest {
     public static void main(String[] args) throws Exception {
 
 
-        if(args.length != 3){
+        if(args.length != 4){
             System.out.println("This program expects the following parameters: " +
                     "1. Output CSV file name period 0 \n" +
                     "2. Output CSV file name period 1 \n" +
-                    "3. Output CSV file name period 2");
+                    "3. Output CSV file name period 2 \n " +
+                    "4. Output CSV Installations file name");
         }else{
 
-            getAllocationsToStationaryInstallations(args[0], args[1], args[2]);
+            //getAllocationsToStationaryInstallations(args[0], args[1], args[2]);
+            getOperatorHoldingAccounts(args[3]);
 
         }
-
-
-
-
 
     }
 
@@ -52,9 +50,38 @@ public class EUTLSeleniumTest {
         File installationsFile = new File(installationsFileSt);
         BufferedWriter outBuff = new BufferedWriter(new FileWriter(installationsFile));
 
+        // Create a new instance of the Firefox driver
+        // Notice that the remainder of the code relies on the interface,
+        // not the implementation.
+        WebDriver driver = new FirefoxDriver();
+
+        driver.get("http://ec.europa.eu/environment/ets/oha.do?form=oha&languageCode=en&account.registryCodes=AT&account.registryCodes=BE&account.registryCodes=BG&account.registryCodes=HR&account.registryCodes=CY&account.registryCodes=CZ&account.registryCodes=DK&account.registryCodes=EE&account.registryCodes=EU&account.registryCodes=FI&account.registryCodes=FR&account.registryCodes=DE&account.registryCodes=GR&account.registryCodes=HU&account.registryCodes=IS&account.registryCodes=IE&account.registryCodes=IT&account.registryCodes=LV&account.registryCodes=LI&account.registryCodes=LT&account.registryCodes=LU&account.registryCodes=MT&account.registryCodes=NL&account.registryCodes=NO&account.registryCodes=PL&account.registryCodes=PT&account.registryCodes=RO&account.registryCodes=SK&account.registryCodes=SI&account.registryCodes=ES&account.registryCodes=SE&account.registryCodes=GB&accountHolder=&installationIdentifier=&installationName=&permitIdentifier=&mainActivityType=-1&search=Search&searchType=oha&currentSortSettings=&resultList.currentPageNumber=1");
+
+        WebElement detailsAllButton = driver.findElement(By.name("detailsAllAllPeriods"));
+        detailsAllButton.click();
+
+        WebElement nextButton = driver.findElement(By.name("nextList"));
+
+        while(nextButton.getAttribute("disabled") == null){
+
+            WebElement tableGeneralInfo = driver.findElement(By.id("tblAccountGeneralInfo"));
+            List<WebElement> tr_collection = tableGeneralInfo.findElements(By.xpath("id('tblAccountGeneralInfo')/tbody/tr"));
+
+            WebElement validRow = tr_collection.get(2);
+            List<WebElement> td_collection = validRow.findElements(By.xpath("td"));
+            
+            for(WebElement tdElement : td_collection){
+                System.out.println("tdElement.getText() = " + tdElement.getText());
+            }
+
+            nextButton.click();
+            nextButton = driver.findElement(By.name("nextList"));
+        }
+
+
+        driver.quit();
 
         outBuff.close();
-        
 
     }
 
