@@ -24,6 +24,7 @@ public class EUTLSeleniumTest {
     public static String PERIOD_1_HEADER = "Country\tInstallation ID\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2008\t2009\t2010\t2011\t2012\tStatus";
     public static String PERIOD_2_HEADER = "Country\tInstallation ID\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2013\t2014\t2015\t2016\t2017\t2018\t2019\t2020\tStatus";
 
+    public static String INSTALLATIONS_HEADER = "Country\tType\tName\tID\tCompany Registration Number\tStatus";
 
 
 
@@ -50,6 +51,8 @@ public class EUTLSeleniumTest {
         File installationsFile = new File(installationsFileSt);
         BufferedWriter outBuff = new BufferedWriter(new FileWriter(installationsFile));
 
+        outBuff.write(INSTALLATIONS_HEADER + "\n");
+
         // Create a new instance of the Firefox driver
         // Notice that the remainder of the code relies on the interface,
         // not the implementation.
@@ -69,10 +72,18 @@ public class EUTLSeleniumTest {
 
             WebElement validRow = tr_collection.get(2);
             List<WebElement> td_collection = validRow.findElements(By.xpath("td"));
-            
-            for(WebElement tdElement : td_collection){
-                System.out.println("tdElement.getText() = " + tdElement.getText());
-            }
+
+            String countrySt = td_collection.get(0).getText();
+            String accountTypeSt = td_collection.get(1).getText();
+            String nameSt = td_collection.get(2).getText();
+            String idSt = td_collection.get(3).getText();
+            String companyRegistrationNumberSt = td_collection.get(4).getText();
+            String accountStatus = td_collection.get(5).getText();
+
+            outBuff.write(countrySt + "\t" + accountTypeSt + "\t" + nameSt + "\t" + idSt + "\t" +
+                    companyRegistrationNumberSt + "\t" + accountStatus + "\n");
+
+            outBuff.flush();
 
             nextButton.click();
             nextButton = driver.findElement(By.name("nextList"));
