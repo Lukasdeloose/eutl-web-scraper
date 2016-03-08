@@ -97,10 +97,11 @@ public class EUTLSeleniumTest {
                             List<WebElement> tr_collection=table_element.findElements(By.xpath("id('tblNapList')/tbody/tr"));
 
                             if(period == 0){
-                                outBuffPeriod0.write(country + "\t");
 
                                 for(int rowCounter=3; rowCounter<tr_collection.size(); rowCounter++)
                                 {
+
+                                    outBuffPeriod0.write(country + "\t");
 
                                     WebElement trElement = tr_collection.get(rowCounter);
 
@@ -125,10 +126,11 @@ public class EUTLSeleniumTest {
                                 }
 
                             }else if(period == 1){
-                                outBuffPeriod1.write(country + "\t");
 
                                 for(int rowCounter=3; rowCounter<tr_collection.size(); rowCounter++)
                                 {
+
+                                    outBuffPeriod1.write(country + "\t");
 
                                     WebElement trElement = tr_collection.get(rowCounter);
 
@@ -154,10 +156,11 @@ public class EUTLSeleniumTest {
                                     System.out.println("Row: " + rowCounter + " completed");
                                 }
                             }else if(period == 2){
-                                outBuffPeriod2.write(country + "\t");
 
                                 for(int rowCounter=3; rowCounter<(tr_collection.size()-3); rowCounter++)
                                 {
+
+                                    outBuffPeriod2.write(country + "\t");
 
                                     WebElement trElement = tr_collection.get(rowCounter);
 
