@@ -20,6 +20,11 @@ public class EUTLSeleniumTest {
     public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","EU","FI","FR","DE","GR","HU",
                                             "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
                                             "SK","SI","ES","SE","GB"};
+    public static String PERIOD_0_HEADER = "Country\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2005\t2006\t2007\tStatus";
+    public static String PERIOD_1_HEADER = "Country\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2008\t2009\t2010\t2011\t2012\tStatus";
+    public static String PERIOD_2_HEADER = "Country\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2013\t2014\t2015\t2016\t2017\t2018\t2019\t2020\tStatus";
+
+
 
 
     public static void main(String[] args) throws Exception {
@@ -36,12 +41,19 @@ public class EUTLSeleniumTest {
             File outputFilePeriod0 = new File(args[0]);
             File outputFilePeriod1 = new File(args[1]);
             File outputFilePeriod2 = new File(args[2]);
+
             // Create a new instance of the Firefox driver
             // Notice that the remainder of the code relies on the interface,
             // not the implementation.
             WebDriver driver = new FirefoxDriver();
 
-            BufferedWriter outBuff = new BufferedWriter(new FileWriter(outputFile));
+            BufferedWriter outBuffPeriod0 = new BufferedWriter(new FileWriter(outputFilePeriod0));
+            outBuffPeriod0.write(PERIOD_0_HEADER + "\n");
+            BufferedWriter outBuffPeriod1 = new BufferedWriter(new FileWriter(outputFilePeriod1));
+            outBuffPeriod1.write(PERIOD_1_HEADER + "\n");
+            BufferedWriter outBuffPeriod2 = new BufferedWriter(new FileWriter(outputFilePeriod2));
+            outBuffPeriod2.write(PERIOD_2_HEADER + "\n");
+
 
             for(String country : countriesArray){
                 for(int period=0; period<=2; period++){
@@ -75,48 +87,93 @@ public class EUTLSeleniumTest {
 
                     //-----------------------TABLE ELEMENT-------------------------------------------------------------
 
+                    int pageNumber = 0;
+
                     while(table_element != null){
+
+                        System.out.println("Country: " + country + " Period: " + period + " Page: " + pageNumber);
+
                         List<WebElement> tr_collection=table_element.findElements(By.xpath("id('tblNapList')/tbody/tr"));
 
-                        System.out.println("NUMBER OF ROWS IN THIS TABLE = "+tr_collection.size());
-
-                        int row_num,col_num;
-                        row_num=1;
-
-                        for(WebElement trElement : tr_collection)
+                        for(int rowCounter=3; rowCounter<tr_collection.size(); rowCounter++)
                         {
+
+                            WebElement trElement = tr_collection.get(rowCounter);
+
                             List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
-                            System.out.println("NUMBER OF COLUMNS="+td_collection.size());
-                            col_num=1;
-                            for(int counter=0; counter< td_collection.size()-1;counter++)
+                            //System.out.println("NUMBER OF COLUMNS="+td_collection.size());
+
+                            if(period == 0){
+                                outBuffPeriod0.write(country + "\t");
+                            }else if(period == 1){
+                                outBuffPeriod1.write(country + "\t");
+                            }else if(period == 2){
+                                outBuffPeriod2.write(country + "\t");
+                            }
+
+                            for(int columnCounter=1; columnCounter< td_collection.size()-1;columnCounter++)
                             {
 
-                                WebElement tdElement = td_collection.get(counter);
+                                WebElement tdElement = td_collection.get(columnCounter);
 
                                 if(period == 0){
 
+                                    outBuffPeriod0.write(tdElement.getText());
+
+//                                    System.out.println("tdElement.getText() = " + tdElement.getText());
+//                                    System.out.println("columnCounter = " + columnCounter);
+
+                                    if(columnCounter == 10){
+                                        outBuffPeriod0.write("\n");
+                                    }else{
+                                        outBuffPeriod0.write("\t");
+                                    }
+                                    outBuffPeriod0.flush();
+
+
                                 }else if(period == 1){
 
+                                    outBuffPeriod1.write(tdElement.getText());
+                                    if(columnCounter == (td_collection.size()-2)){
+                                        outBuffPeriod1.write("\n");
+                                    }else{
+                                        outBuffPeriod1.write("\t");
+                                    }
+
                                 }else if(period == 2){
+                                    outBuffPeriod2.write(tdElement.getText());
+                                    if(columnCounter == (td_collection.size()-2)){
+                                        outBuffPeriod2.write("\n");
+                                    }else{
+                                        outBuffPeriod2.write("\t");
+                                    }
 
                                 }
 
-
-                                //System.out.println("row # "+row_num+", col # "+col_num+ "text="+tdElement.getText());
-                                col_num++;
                             }
-                            row_num++;
+
+                            System.out.println("Row: " + rowCounter + " completed");
                         }
 
 
                         //----------------NEXT PAGE OF RESULTS BUTTON-----------------------
                         WebElement nextButton = driver.findElement(By.name("nextList"));
-                        if(nextButton != null){
+                        if(nextButton.getAttribute("disabled") == null){
                             nextButton.click();
                             table_element = driver.findElement(By.id("tblNapList"));
+                        }else{
+                            table_element = null;
                         }
 
+                        pageNumber++;
+
                     }
+
+                    outBuffPeriod0.close();
+
+                    outBuffPeriod0.flush();
+                    outBuffPeriod1.flush();
+                    outBuffPeriod2.flush();
 
                     //-----------------------------------------------------------------------------------------
 
@@ -126,8 +183,10 @@ public class EUTLSeleniumTest {
             //Close the browser
             driver.quit();
 
-            //Close output file
-            outBuff.close();
+            //Close output files
+            outBuffPeriod0.close();
+            outBuffPeriod1.close();
+            outBuffPeriod2.close();
         }
 
 

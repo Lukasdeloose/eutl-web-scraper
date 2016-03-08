@@ -25,8 +25,8 @@
         <module name="eutl-web-scraper" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="eutl-web-scraper" target="1.5" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="eutl-web-scraper" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
