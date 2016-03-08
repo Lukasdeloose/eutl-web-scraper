@@ -118,7 +118,7 @@ public class EUTLSeleniumTest {
 
                                 if(period == 0){
 
-                                    outBuffPeriod0.write(tdElement.getText());
+                                    outBuffPeriod0.write(tdElement.getText().replaceAll("\n"," "));
 
 //                                    System.out.println("tdElement.getText() = " + tdElement.getText());
 //                                    System.out.println("columnCounter = " + columnCounter);
@@ -128,21 +128,20 @@ public class EUTLSeleniumTest {
                                     }else{
                                         outBuffPeriod0.write("\t");
                                     }
-                                    outBuffPeriod0.flush();
 
 
                                 }else if(period == 1){
 
-                                    outBuffPeriod1.write(tdElement.getText());
-                                    if(columnCounter == (td_collection.size()-2)){
+                                    outBuffPeriod1.write(tdElement.getText().replaceAll("\n"," "));
+                                    if(columnCounter == 12){
                                         outBuffPeriod1.write("\n");
                                     }else{
                                         outBuffPeriod1.write("\t");
                                     }
 
                                 }else if(period == 2){
-                                    outBuffPeriod2.write(tdElement.getText());
-                                    if(columnCounter == (td_collection.size()-2)){
+                                    outBuffPeriod2.write(tdElement.getText().replaceAll("\n"," "));
+                                    if(columnCounter == 15){
                                         outBuffPeriod2.write("\n");
                                     }else{
                                         outBuffPeriod2.write("\t");
@@ -169,8 +168,6 @@ public class EUTLSeleniumTest {
 
                     }
 
-                    outBuffPeriod0.close();
-
                     outBuffPeriod0.flush();
                     outBuffPeriod1.flush();
                     outBuffPeriod2.flush();
@@ -194,4 +191,5 @@ public class EUTLSeleniumTest {
 
 
     }
+
 }
