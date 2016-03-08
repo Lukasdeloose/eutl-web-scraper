@@ -78,101 +78,132 @@ public class EUTLSeleniumTest {
                         }
                     }
 
-                    // Now submit the form. WebDriver will find the form for us from the element
-                    elementToBeClicked.click();
+                    if(elementToBeClicked != null){
+                        // Now submit the form. WebDriver will find the form for us from the element
+                        elementToBeClicked.click();
 
-                    Thread.sleep(1000);
+                        Thread.sleep(1000);
 
-                    WebElement table_element = driver.findElement(By.id("tblNapList"));
+                        WebElement table_element = driver.findElement(By.id("tblNapList"));
 
-                    //-----------------------TABLE ELEMENT-------------------------------------------------------------
+                        //-----------------------TABLE ELEMENT-------------------------------------------------------------
 
-                    int pageNumber = 0;
+                        int pageNumber = 0;
 
-                    while(table_element != null){
+                        while(table_element != null){
 
-                        System.out.println("Country: " + country + " Period: " + period + " Page: " + pageNumber);
+                            System.out.println("Country: " + country + " Period: " + period + " Page: " + pageNumber);
 
-                        List<WebElement> tr_collection=table_element.findElements(By.xpath("id('tblNapList')/tbody/tr"));
-
-                        for(int rowCounter=3; rowCounter<tr_collection.size(); rowCounter++)
-                        {
-
-                            WebElement trElement = tr_collection.get(rowCounter);
-
-                            List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
-                            //System.out.println("NUMBER OF COLUMNS="+td_collection.size());
+                            List<WebElement> tr_collection=table_element.findElements(By.xpath("id('tblNapList')/tbody/tr"));
 
                             if(period == 0){
                                 outBuffPeriod0.write(country + "\t");
-                            }else if(period == 1){
-                                outBuffPeriod1.write(country + "\t");
-                            }else if(period == 2){
-                                outBuffPeriod2.write(country + "\t");
-                            }
 
-                            for(int columnCounter=1; columnCounter< td_collection.size()-1;columnCounter++)
-                            {
+                                for(int rowCounter=3; rowCounter<tr_collection.size(); rowCounter++)
+                                {
 
-                                WebElement tdElement = td_collection.get(columnCounter);
+                                    WebElement trElement = tr_collection.get(rowCounter);
 
-                                if(period == 0){
+                                    List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
 
-                                    outBuffPeriod0.write(tdElement.getText().replaceAll("\n"," "));
+                                    for(int columnCounter=1; columnCounter< td_collection.size()-1;columnCounter++)
+                                    {
 
-//                                    System.out.println("tdElement.getText() = " + tdElement.getText());
-//                                    System.out.println("columnCounter = " + columnCounter);
+                                        WebElement tdElement = td_collection.get(columnCounter);
 
-                                    if(columnCounter == 10){
-                                        outBuffPeriod0.write("\n");
-                                    }else{
-                                        outBuffPeriod0.write("\t");
+                                        outBuffPeriod0.write(tdElement.getText().replaceAll("\n"," "));
+
+                                        if(columnCounter == 10){
+                                            outBuffPeriod0.write("\n");
+                                        }else{
+                                            outBuffPeriod0.write("\t");
+                                        }
+
                                     }
 
-
-                                }else if(period == 1){
-
-                                    outBuffPeriod1.write(tdElement.getText().replaceAll("\n"," "));
-                                    if(columnCounter == 12){
-                                        outBuffPeriod1.write("\n");
-                                    }else{
-                                        outBuffPeriod1.write("\t");
-                                    }
-
-                                }else if(period == 2){
-                                    outBuffPeriod2.write(tdElement.getText().replaceAll("\n"," "));
-                                    if(columnCounter == 15){
-                                        outBuffPeriod2.write("\n");
-                                    }else{
-                                        outBuffPeriod2.write("\t");
-                                    }
-
+                                    System.out.println("Row: " + rowCounter + " completed");
                                 }
 
+                            }else if(period == 1){
+                                outBuffPeriod1.write(country + "\t");
+
+                                for(int rowCounter=3; rowCounter<tr_collection.size(); rowCounter++)
+                                {
+
+                                    WebElement trElement = tr_collection.get(rowCounter);
+
+                                    List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
+                                    //System.out.println("NUMBER OF COLUMNS="+td_collection.size());
+
+
+
+                                    for(int columnCounter=1; columnCounter< td_collection.size()-1;columnCounter++)
+                                    {
+
+                                        WebElement tdElement = td_collection.get(columnCounter);
+
+                                        outBuffPeriod1.write(tdElement.getText().replaceAll("\n"," "));
+                                        if(columnCounter == 12){
+                                            outBuffPeriod1.write("\n");
+                                        }else{
+                                            outBuffPeriod1.write("\t");
+                                        }
+
+                                    }
+
+                                    System.out.println("Row: " + rowCounter + " completed");
+                                }
+                            }else if(period == 2){
+                                outBuffPeriod2.write(country + "\t");
+
+                                for(int rowCounter=3; rowCounter<(tr_collection.size()-3); rowCounter++)
+                                {
+
+                                    WebElement trElement = tr_collection.get(rowCounter);
+
+                                    List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
+                                    //System.out.println("NUMBER OF COLUMNS="+td_collection.size());
+
+                                    for(int columnCounter=1; columnCounter< td_collection.size()-1;columnCounter++)
+                                    {
+
+                                        WebElement tdElement = td_collection.get(columnCounter);
+
+                                        outBuffPeriod2.write(tdElement.getText().replaceAll("\n"," "));
+                                        if(columnCounter == 15){
+                                            outBuffPeriod2.write("\n");
+                                        }else{
+                                            outBuffPeriod2.write("\t");
+                                        }
+
+                                    }
+
+                                    System.out.println("Row: " + rowCounter + " completed");
+                                }
                             }
 
-                            System.out.println("Row: " + rowCounter + " completed");
+
+
+
+                            //----------------NEXT PAGE OF RESULTS BUTTON-----------------------
+                            WebElement nextButton = driver.findElement(By.name("nextList"));
+                            if(nextButton.getAttribute("disabled") == null){
+                                nextButton.click();
+                                table_element = driver.findElement(By.id("tblNapList"));
+                            }else{
+                                table_element = null;
+                            }
+
+                            pageNumber++;
+
                         }
 
+                        outBuffPeriod0.flush();
+                        outBuffPeriod1.flush();
+                        outBuffPeriod2.flush();
 
-                        //----------------NEXT PAGE OF RESULTS BUTTON-----------------------
-                        WebElement nextButton = driver.findElement(By.name("nextList"));
-                        if(nextButton.getAttribute("disabled") == null){
-                            nextButton.click();
-                            table_element = driver.findElement(By.id("tblNapList"));
-                        }else{
-                            table_element = null;
-                        }
-
-                        pageNumber++;
-
+                        //-----------------------------------------------------------------------------------------
                     }
-
-                    outBuffPeriod0.flush();
-                    outBuffPeriod1.flush();
-                    outBuffPeriod2.flush();
-
-                    //-----------------------------------------------------------------------------------------
 
                 }
             }
