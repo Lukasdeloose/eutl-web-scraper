@@ -31,27 +31,32 @@ public class EUTLSeleniumTest {
     public static void main(String[] args) throws Exception {
 
 
-        if(args.length != 4){
+        if(args.length != 5){
             System.out.println("This program expects the following parameters: " +
                     "1. Output CSV file name period 0 \n" +
                     "2. Output CSV file name period 1 \n" +
                     "3. Output CSV file name period 2 \n " +
-                    "4. Output CSV Installations file name");
+                    "4. Output CSV Installations file name \n " +
+                    "5. Output CSV Aircraft Operators file name");
         }else{
 
             //getAllocationsToStationaryInstallations(args[0], args[1], args[2]);
-            getOperatorHoldingAccounts(args[3]);
+            getOperatorHoldingAccounts(args[3], args[4]);
 
         }
 
     }
 
-    public static void getOperatorHoldingAccounts(String installationsFileSt) throws Exception{
+    public static void getOperatorHoldingAccounts(String installationsFileSt,
+                                                  String aircraftOpsFileSt) throws Exception{
 
         File installationsFile = new File(installationsFileSt);
-        BufferedWriter outBuff = new BufferedWriter(new FileWriter(installationsFile));
+        BufferedWriter installationsOutBuff = new BufferedWriter(new FileWriter(installationsFile));
+        installationsOutBuff.write(INSTALLATIONS_HEADER + "\n");
 
-        outBuff.write(INSTALLATIONS_HEADER + "\n");
+        File aircraftOpsFile = new File(aircraftOpsFileSt);
+        BufferedWriter aircraftOpsOutBuff = new BufferedWriter(new FileWriter(aircraftOpsFile));
+        aircraftOpsOutBuff.write(AIRCRAFT_OPERATORS_HEADER + "\n");
 
         // Create a new instance of the Firefox driver
         // Notice that the remainder of the code relies on the interface,
@@ -83,8 +88,10 @@ public class EUTLSeleniumTest {
             String companyRegistrationNumberSt = td_collection.get(4).getText();
             String accountStatus = td_collection.get(5).getText();
 
-            outBuff.write(nationalAdministratorSt + "\t" + accountTypeSt + "\t" + accountHolderNameSt + "\t" + idSt + "\t" +
-                    companyRegistrationNumberSt + "\t" + accountStatus + "\t");
+            String contentToBeWrittenSt = nationalAdministratorSt + "\t" + accountTypeSt + "\t" + accountHolderNameSt + "\t" + idSt + "\t" +
+                    companyRegistrationNumberSt + "\t" + accountStatus + "\t";
+            installationsOutBuff.write(contentToBeWrittenSt);
+            aircraftOpsOutBuff.write(contentToBeWrittenSt);
 
 
             //====================DETAILS ON CONTACT INFORMATION================================
@@ -102,10 +109,12 @@ public class EUTLSeleniumTest {
             String citySt = td_collection.get(5).getText();
             String countrySt = td_collection.get(6).getText();
 
-            outBuff.write(typeSt + "\t" + nameSt + "\t" + mainAddressSt + "\t" + secondaryAddressSt + "\t" +
-                    postalCodeSt + "\t" + citySt + "\t" + countrySt + "\n");
+            contentToBeWrittenSt = typeSt + "\t" + nameSt + "\t" + mainAddressSt + "\t" + secondaryAddressSt + "\t" +
+                    postalCodeSt + "\t" + citySt + "\t" + countrySt + "\n";
+            installationsOutBuff.write(contentToBeWrittenSt);
+            aircraftOpsOutBuff.write(contentToBeWrittenSt);
 
-            outBuff.flush();
+
 
             //===============================INFORMATION TABLE==========================
             //=========================================================================
@@ -126,9 +135,28 @@ public class EUTLSeleniumTest {
 
             if(isAircraft){
 
+                WebElement dataRow = tr_collection.get(2);
+                td_collection = dataRow.findElements(By.xpath("td"));
+                String uniqueCodeComissionSt = td_collection.get(1).getText();
+                String monitoringPlanIDst = td_collection.get(2).getText();
+                String monitoringPlanFirstYearSt = td_collection.get(3).getText();
+                String monitoringPlanYearExpirySt = td_collection.get(4).getText();
+                String subsidiaryCompanySt = td_collection.get(5).getText();
+                String parentCompanySt = td_collection.get(6).getText();
+                String eprtrIdSt = td_collection.get(7).getText();
+                String icaoDesignatorSt = td_collection.get(8).getText();
+
+                aircraftOpsOutBuff.flush();
+
             }else{
 
+
+                installationsOutBuff.flush();
+
             }
+
+
+
 
 
             nextButton.click();
@@ -138,7 +166,8 @@ public class EUTLSeleniumTest {
 
         driver.quit();
 
-        outBuff.close();
+        installationsOutBuff.close();
+        aircraftOpsOutBuff.close();
 
     }
 
