@@ -24,8 +24,8 @@ public class EUTLSeleniumTest {
     public static String PERIOD_1_HEADER = "Country\tInstallation ID\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2008\t2009\t2010\t2011\t2012\tStatus";
     public static String PERIOD_2_HEADER = "Country\tInstallation ID\tInstallation Name\tAddress City\tAccount Holder Name\tAccount Status\tPermit ID\tLatest Update\t2013\t2014\t2015\t2016\t2017\t2018\t2019\t2020\tStatus";
 
-    public static String INSTALLATIONS_HEADER = "Country\tType\tName\tID\tCompany Registration Number\tStatus";
-
+    public static String INSTALLATIONS_HEADER = "Country\tType\tAccount Holder Name\tID\tCompany Registration Number\tStatus\tType\tName\tMain Address\tSecondary Address\tPostal Code\tCity\tCountry\tInstallation name\tPermit ID\tPermit Entry Date\tPermit Expiry/Revocation Date\tSubsidiary Company\tParent Company\tE-PRTR identification";
+    public static String AIRCRAFT_OPERATORS_HEADER = "Country\tType\tAccount Holder Name\tID\tCompany Registration Number\tStatus\tType\tName\tMain Address\tSecondary Address\tPostal Code\tCity\tCountry\tUnique Code under Commission Regulation\tMonitoring Plan ID\tMonitoring plan first year of applicability\tMonitoring plan year of expiry\tSubsidiary Company\tParent Company\tE-PRTR identification\tICAO designator";
 
 
     public static void main(String[] args) throws Exception {
@@ -67,23 +67,69 @@ public class EUTLSeleniumTest {
 
         while(nextButton.getAttribute("disabled") == null){
 
+            //-------------------------------------------------------------------------
+            //------------------------GENERAL INFORMATION------------------------------
+
             WebElement tableGeneralInfo = driver.findElement(By.id("tblAccountGeneralInfo"));
             List<WebElement> tr_collection = tableGeneralInfo.findElements(By.xpath("id('tblAccountGeneralInfo')/tbody/tr"));
 
             WebElement validRow = tr_collection.get(2);
             List<WebElement> td_collection = validRow.findElements(By.xpath("td"));
 
-            String countrySt = td_collection.get(0).getText();
+            String nationalAdministratorSt = td_collection.get(0).getText();
             String accountTypeSt = td_collection.get(1).getText();
-            String nameSt = td_collection.get(2).getText();
+            String accountHolderNameSt = td_collection.get(2).getText();
             String idSt = td_collection.get(3).getText();
             String companyRegistrationNumberSt = td_collection.get(4).getText();
             String accountStatus = td_collection.get(5).getText();
 
-            outBuff.write(countrySt + "\t" + accountTypeSt + "\t" + nameSt + "\t" + idSt + "\t" +
-                    companyRegistrationNumberSt + "\t" + accountStatus + "\n");
+            outBuff.write(nationalAdministratorSt + "\t" + accountTypeSt + "\t" + accountHolderNameSt + "\t" + idSt + "\t" +
+                    companyRegistrationNumberSt + "\t" + accountStatus + "\t");
+
+
+            //====================DETAILS ON CONTACT INFORMATION================================
+            //================================================================================
+            WebElement tableContactInfo = driver.findElement(By.id("tblAccountContactInfo"));
+            tr_collection = tableContactInfo.findElements(By.xpath("id('tblAccountContactInfo')/tbody/tr"));
+            validRow = tr_collection.get(2);
+            td_collection = validRow.findElements(By.xpath("td"));
+
+            String typeSt = td_collection.get(0).getText();
+            String nameSt = td_collection.get(1).getText();
+            String mainAddressSt = td_collection.get(2).getText();
+            String secondaryAddressSt = td_collection.get(3).getText();
+            String postalCodeSt = td_collection.get(4).getText();
+            String citySt = td_collection.get(5).getText();
+            String countrySt = td_collection.get(6).getText();
+
+            outBuff.write(typeSt + "\t" + nameSt + "\t" + mainAddressSt + "\t" + secondaryAddressSt + "\t" +
+                    postalCodeSt + "\t" + citySt + "\t" + countrySt + "\n");
 
             outBuff.flush();
+
+            //===============================INFORMATION TABLE==========================
+            //=========================================================================
+
+            WebElement tableDetails = driver.findElement(By.id("tblChildDetails"));
+            List<WebElement> table_collection = tableDetails.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table"));
+
+            //+++++++++++++++++++GENERAL INFO++++++++++++++++++++++++
+
+            WebElement generalInformationTable = table_collection.get(0);
+            tr_collection = generalInformationTable.findElements(By.xpath("tbody/tr"));
+
+            WebElement headerRow = tr_collection.get(1);
+            td_collection = headerRow.findElements(By.xpath("td"));
+            String isAircraftText = td_collection.get(0).getText().trim();
+
+            boolean isAircraft = isAircraftText.equals("Aircraft Operator ID");
+
+            if(isAircraft){
+
+            }else{
+
+            }
+
 
             nextButton.click();
             nextButton = driver.findElement(By.name("nextList"));
