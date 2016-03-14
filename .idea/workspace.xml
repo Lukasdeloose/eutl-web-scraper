@@ -7,7 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c17a59ce-cdcd-4552-a644-f63b37401068" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLSeleniumTest.java" afterPath="$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLSeleniumTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dist/eutl-web-scraper.jar" afterPath="$PROJECT_DIR$/dist/eutl-web-scraper.jar" />
     </list>
     <ignored path="eutl-web-scraper.iws" />
     <ignored path=".idea/workspace.xml" />
