@@ -53,8 +53,8 @@ public class EUTLSeleniumTest {
                     "6. Output CSV Installations Compliance Data file name");
         }else{
 
-            //getOperatorHoldingAccounts(args[3], args[4], args[5]);
-            getAllocationsToStationaryInstallations(args[0], args[1], args[2]);
+            getOperatorHoldingAccounts(args[3], args[4], args[5]);
+            //getAllocationsToStationaryInstallations(args[0], args[1], args[2]);
 
         }
 
@@ -65,7 +65,7 @@ public class EUTLSeleniumTest {
                                                   String installationsComplianceDataSt) throws Exception{
 
 
-        ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(6);
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(6);
 
         for (String countryCode : countriesArray){
 
@@ -250,12 +250,17 @@ public class EUTLSeleniumTest {
 
             };
 
-            executor.execute(countryRunnable);
+            threadPoolExecutor.submit(countryRunnable);
         }
 
 
-        System.out.println("Maximum threads inside pool " + executor.getMaximumPoolSize());
-        executor.shutdown();
+        System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
+        while(threadPoolExecutor.getActiveCount() > 0){
+            TimeUnit.SECONDS.sleep(30);
+            System.out.println("Just woke up! ");
+            System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
+        }
+        threadPoolExecutor.shutdown();
 
 
     }
@@ -452,7 +457,7 @@ public class EUTLSeleniumTest {
         System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
 
         while(threadPoolExecutor.getActiveCount() > 0){
-            TimeUnit.SECONDS.sleep(60);
+            TimeUnit.SECONDS.sleep(30);
             System.out.println("Just woke up! ");
             System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
         }
