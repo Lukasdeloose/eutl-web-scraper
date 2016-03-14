@@ -31,14 +31,11 @@ public class EUTLSeleniumTest {
     public static final String ALLOWANCES_IN_ALLOCATION_TYPE = "Allowances in Allocation";
     public static final String VERIFIED_EMISSIONS_TYPE = "Verified Emissions";
     public static final String UNITS_SURRENDERED_TYPE = "Units Surrendered";
-    //public static final String CUMULATIVE_UNITS_SURRENDERED_TYPE = "Cumulative Surrendered Emmissions";
-    //public static final String CUMULATIVE_VERIFIED_EMISSIONS_TYPE = "Cumulative Verified Emissions";
     public static final String COMPLIANCE_CODE_TYPE = "Compliance Code";
 
     public static final String INSTALLATIONS_COMPLIANCE_DATA_HEADER = "Country\tInstallation ID\tYear\t" +
             ALLOWANCES_IN_ALLOCATION_TYPE + "\t" + VERIFIED_EMISSIONS_TYPE + "\t" + UNITS_SURRENDERED_TYPE + "\t" +
-            //CUMULATIVE_UNITS_SURRENDERED_TYPE + "\t" + CUMULATIVE_VERIFIED_EMISSIONS_TYPE + "\t" +
-            COMPLIANCE_CODE_TYPE + "\tValue";
+            COMPLIANCE_CODE_TYPE;
 
     public static void main(String[] args) throws Exception {
 
