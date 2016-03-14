@@ -85,8 +85,8 @@ public class EUTLSeleniumTest {
                     BufferedWriter aircraftOpsOutBuff = new BufferedWriter(new FileWriter(aircraftOpsFile));
                     aircraftOpsOutBuff.write(AIRCRAFT_OPERATORS_HEADER + "\n");
 
-                    File installationsCompDataFile = new File(aircraftOpsFileSt.split("\\.")[0] + countryCode + ".csv");
-                    BufferedWriter installationsCompOutBuff = new BufferedWriter(new FileWriter(installationsComplianceDataSt));
+                    File installationsCompDataFile = new File(installationsComplianceDataSt.split("\\.")[0] + countryCode + ".csv");
+                    BufferedWriter installationsCompOutBuff = new BufferedWriter(new FileWriter(installationsCompDataFile));
                     installationsCompOutBuff.write(INSTALLATIONS_COMPLIANCE_DATA_HEADER + "\n");
 
                     // Create a new instance of the Firefox driver
@@ -161,6 +161,7 @@ public class EUTLSeleniumTest {
 
                         List<WebElement> complianceRows = tableDetails.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/div/table/tbody/tr"));
                         for(int i=2;i<=17;i++){
+                            //System.out.println("i = " + i);
                             WebElement currentRow = complianceRows.get(i);
                             List<WebElement> columns = currentRow.findElements(By.xpath("td"));
 
@@ -175,7 +176,6 @@ public class EUTLSeleniumTest {
 
                             installationsCompOutBuff.write(countrySt + "\t" + idSt + "\t" + yearSt + "\t" +
                                     allowancesInAllocationSt + "\t" + verifiedEmissionsSt + "\t" + unitsSurrenderedSt + "\t" +
-                                    // + cumulativeSurrenderedUnitsSt + "\t" + cumulativeVerifiedEmissionsSt + "\t" +
                                     complianceCodeSt + "\n");
 
                         }
@@ -228,8 +228,6 @@ public class EUTLSeleniumTest {
 
                         }
 
-//            System.out.println("isAircraft = " + isAircraft);
-//            System.out.println("nameSt = " + nameSt);
 
                         nextButton.click();
                         nextButton = driver.findElement(By.name("nextList"));
