@@ -222,6 +222,8 @@ public class EUTLSeleniumTest {
 
                             dataRow = tr_collection_general_info.get(2);
                             td_collection = dataRow.findElements(By.xpath("td"));
+
+                            installationIdSt = td_collection.get(0).getText();
                             String installationNameSt = td_collection.get(1).getText();
                             String permitIDSt = td_collection.get(2).getText();
                             String permitEntryDateSt = td_collection.get(3).getText();
@@ -230,9 +232,9 @@ public class EUTLSeleniumTest {
                             String parentCompanySt = td_collection.get(6).getText();
                             String eprtrIdSt = td_collection.get(7).getText();
 
-                            installationsOutBuff.write(installationNameSt + "\t" + permitIDSt + "\t" + permitEntryDateSt +
-                                    "\t" + permitExpiryDateSt + "\t" + subsidiaryCompanySt + "\t" + parentCompanySt + "\t"
-                                    + eprtrIdSt + "\t") ;
+                            installationsOutBuff.write(installationIdSt + "\t" + installationNameSt + "\t" + permitIDSt +
+                                    "\t" + permitEntryDateSt + "\t" + permitExpiryDateSt + "\t" + subsidiaryCompanySt +
+                                    "\t" + parentCompanySt + "\t" + eprtrIdSt + "\t") ;
 
                             installationsOutBuff.write(addressInfoSt);
 
