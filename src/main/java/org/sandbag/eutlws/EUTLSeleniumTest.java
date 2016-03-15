@@ -117,9 +117,9 @@ public class EUTLSeleniumTest {
                         //------------------------GENERAL INFORMATION------------------------------
 
                         WebElement tableGeneralInfo = driver.findElement(By.id("tblAccountGeneralInfo"));
-                        List<WebElement> tr_collection = tableGeneralInfo.findElements(By.xpath("id('tblAccountGeneralInfo')/tbody/tr"));
+                        List<WebElement> tr_collection_account_general_info = tableGeneralInfo.findElements(By.xpath("id('tblAccountGeneralInfo')/tbody/tr"));
 
-                        WebElement validRow = tr_collection.get(2);
+                        WebElement validRow = tr_collection_account_general_info.get(2);
                         List<WebElement> td_collection = validRow.findElements(By.xpath("td"));
 
                         String nationalAdministratorSt = td_collection.get(0).getText();
@@ -133,8 +133,8 @@ public class EUTLSeleniumTest {
                         //====================DETAILS ON CONTACT INFORMATION================================
                         //================================================================================
                         WebElement tableContactInfo = driver.findElement(By.id("tblAccountContactInfo"));
-                        tr_collection = tableContactInfo.findElements(By.xpath("id('tblAccountContactInfo')/tbody/tr"));
-                        validRow = tr_collection.get(2);
+                        List<WebElement> tr_collection_account_contact_info = tableContactInfo.findElements(By.xpath("id('tblAccountContactInfo')/tbody/tr"));
+                        validRow = tr_collection_account_contact_info.get(2);
                         td_collection = validRow.findElements(By.xpath("td"));
 
                         String companyTypeSt = td_collection.get(0).getText();
@@ -164,11 +164,9 @@ public class EUTLSeleniumTest {
 
                         WebElement headerRow = tr_collection_general_info.get(1);
                         td_collection = headerRow.findElements(By.xpath("td"));
-                        String isAircraftText = tr_collection_general_info.get(0).getText().trim();
+                        String isAircraftText = td_collection.get(0).getText().trim();
 
                         boolean isAircraft = isAircraftText.equals("Aircraft Operator ID");
-
-                        //System.out.println("contentToBeWrittenSt = " + contentToBeWrittenSt);
 
                         //+++++++++++++++++++ADDRESS INFO++++++++++++++++++++++++
 
@@ -190,12 +188,6 @@ public class EUTLSeleniumTest {
                         String addressInfoSt = installationMainAddressSt + "\t" + installationSecondaryAddressSt + "\t" +
                                 installationPostalCodeSt + "\t" + installationCitySt + "\t" + installationCountryId + "\t" +
                                 installationLatitudeSt + "\t" + installationLongitudeSt + "\t" + installationMainActivitySt + "\n";
-
-                        //System.out.println("addressInfoSt = " + addressInfoSt);
-
-
-
-
 
                         if(isAircraft){
 
