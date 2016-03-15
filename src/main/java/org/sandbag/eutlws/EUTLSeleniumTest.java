@@ -51,18 +51,21 @@ public class EUTLSeleniumTest {
     public static void main(String[] args) throws Exception {
 
 
-        if(args.length != 6){
+        if(args.length != 7){
             System.out.println("This program expects the following parameters: " +
                     "1. Output CSV file name period 0 \n" +
                     "2. Output CSV file name period 1 \n" +
                     "3. Output CSV file name period 2 \n " +
                     "4. Output CSV Installations file name \n " +
                     "5. Output CSV Aircraft Operators file name \n" +
-                    "6. Output CSV Installations Compliance Data file name");
+                    "6. Output CSV Installations Compliance Data file name\n" +
+                    "7. Number of concurrent browsers (int)");
         }else{
 
-            getOperatorHoldingAccounts(args[3], args[4], args[5]);
-            //getAllocationsToStationaryInstallations(args[0], args[1], args[2]);
+            int numberOfConcurrentBrowsers = Integer.parseInt(args[6]);
+
+            getOperatorHoldingAccounts(args[3], args[4], args[5],numberOfConcurrentBrowsers);
+            //getAllocationsToStationaryInstallations(args[0], args[1], args[2],numberOfConcurrentBrowsers);
 
         }
 
@@ -70,10 +73,11 @@ public class EUTLSeleniumTest {
 
     public static void getOperatorHoldingAccounts(String installationsFileSt,
                                                   String aircraftOpsFileSt,
-                                                  String installationsComplianceDataSt) throws Exception{
+                                                  String installationsComplianceDataSt,
+                                                  int numberOfConcurrentBrowsers) throws Exception{
 
 
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(6);
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
 
         for (String countryCode : countriesArray){
 
@@ -156,13 +160,40 @@ public class EUTLSeleniumTest {
                         //+++++++++++++++++++GENERAL INFO++++++++++++++++++++++++
 
                         WebElement generalInformationTable = table_collection.get(0);
-                        tr_collection = generalInformationTable.findElements(By.xpath("tbody/tr"));
+                        List<WebElement> tr_collection_general_info = generalInformationTable.findElements(By.xpath("tbody/tr"));
 
-                        WebElement headerRow = tr_collection.get(1);
+                        WebElement headerRow = tr_collection_general_info.get(1);
                         td_collection = headerRow.findElements(By.xpath("td"));
-                        String isAircraftText = td_collection.get(0).getText().trim();
+                        String isAircraftText = tr_collection_general_info.get(0).getText().trim();
 
                         boolean isAircraft = isAircraftText.equals("Aircraft Operator ID");
+
+                        //System.out.println("contentToBeWrittenSt = " + contentToBeWrittenSt);
+
+                        //+++++++++++++++++++ADDRESS INFO++++++++++++++++++++++++
+
+                        WebElement addressInformationTable = table_collection.get(1);
+                        List<WebElement> tr_collection_address = addressInformationTable.findElements(By.xpath("tbody/tr"));
+
+                        WebElement dataRow = tr_collection_address.get(2);
+                        td_collection = dataRow.findElements(By.xpath("td"));
+
+                        String installationMainAddressSt = td_collection.get(0).getText();
+                        String installationSecondaryAddressSt = td_collection.get(1).getText();
+                        String installationPostalCodeSt = td_collection.get(2).getText();
+                        String installationCitySt = td_collection.get(3).getText();
+                        String installationCountryId = td_collection.get(4).getText();
+                        String installationLatitudeSt = td_collection.get(5).getText();
+                        String installationLongitudeSt = td_collection.get(6).getText();
+                        String installationMainActivitySt = td_collection.get(7).getText();
+
+                        String addressInfoSt = installationMainAddressSt + "\t" + installationSecondaryAddressSt + "\t" +
+                                installationPostalCodeSt + "\t" + installationCitySt + "\t" + installationCountryId + "\t" +
+                                installationLatitudeSt + "\t" + installationLongitudeSt + "\t" + installationMainActivitySt + "\n";
+
+                        //System.out.println("addressInfoSt = " + addressInfoSt);
+
+
 
 
 
@@ -170,8 +201,7 @@ public class EUTLSeleniumTest {
 
                             aircraftOpsOutBuff.write(contentToBeWrittenSt);
 
-
-                            WebElement dataRow = tr_collection.get(2);
+                            dataRow = tr_collection_general_info.get(2);
                             td_collection = dataRow.findElements(By.xpath("td"));
 
                             String uniqueCodeComissionSt = td_collection.get(1).getText();
@@ -187,6 +217,8 @@ public class EUTLSeleniumTest {
                                     "\t" + monitoringPlanYearExpirySt + "\t" + subsidiaryCompanySt + "\t" +
                                     parentCompanySt + "\t" + eprtrIdSt + "\t" + icaoDesignatorSt + "\t") ;
 
+                            aircraftOpsOutBuff.write(addressInfoSt);
+
                             aircraftOpsOutBuff.flush();
 
 
@@ -195,7 +227,7 @@ public class EUTLSeleniumTest {
 
                             installationsOutBuff.write(contentToBeWrittenSt);
 
-                            WebElement dataRow = tr_collection.get(2);
+                            dataRow = tr_collection_general_info.get(2);
                             td_collection = dataRow.findElements(By.xpath("td"));
                             String installationNameSt = td_collection.get(1).getText();
                             String permitIDSt = td_collection.get(2).getText();
@@ -209,34 +241,12 @@ public class EUTLSeleniumTest {
                                     "\t" + permitExpiryDateSt + "\t" + subsidiaryCompanySt + "\t" + parentCompanySt + "\t"
                                     + eprtrIdSt + "\t") ;
 
+                            installationsOutBuff.write(addressInfoSt);
+
                             installationsOutBuff.flush();
 
                         }
 
-                        //+++++++++++++++++++ADDRESS INFO++++++++++++++++++++++++
-
-                        WebElement addressInformationTable = table_collection.get(1);
-                        tr_collection = addressInformationTable.findElements(By.xpath("tbody/tr"));
-
-                        WebElement dataRow = tr_collection.get(2);
-                        td_collection = dataRow.findElements(By.xpath("td"));
-
-                        String installationMainAddressSt = td_collection.get(0).getText();
-                        String installationSecondaryAddressSt = td_collection.get(1).getText();
-                        String installationPostalCodeSt = td_collection.get(2).getText();
-                        String installationCitySt = td_collection.get(3).getText();
-                        String installationCountryId = td_collection.get(4).getText();
-                        String installationLatitudeSt = td_collection.get(5).getText();
-                        String installationLongitudeSt = td_collection.get(6).getText();
-                        String installationMainActivitySt = td_collection.get(7).getText();
-
-                        String addressInfoSt = installationMainAddressSt + "\t" + installationSecondaryAddressSt + "\t" +
-                                installationPostalCodeSt + "\t" + installationCitySt + "\t" + installationCountryId + "\t" +
-                                installationCountryId + "\t" + installationLatitudeSt + "\t" + installationLongitudeSt + "\t" +
-                                installationMainActivitySt + "\n";
-
-                        installationsOutBuff.write(addressInfoSt);
-                        aircraftOpsOutBuff.write(addressInfoSt);
 
                         //*************************COMPLIANCE INFORMATION++++++++++++++++++++++++
 
@@ -302,10 +312,11 @@ public class EUTLSeleniumTest {
     public static void getAllocationsToStationaryInstallations(
             String filePeriod0St,
             String filePeriod1St,
-            String filePeriod2St) throws Exception{
+            String filePeriod2St,
+            int numberOfConcurrentBrowsers) throws Exception{
 
 
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(6);
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
 
 
         for(String country : countriesArray){
