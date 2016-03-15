@@ -196,6 +196,7 @@ public class EUTLSeleniumTest {
                             dataRow = tr_collection_general_info.get(2);
                             td_collection = dataRow.findElements(By.xpath("td"));
 
+                            String aircraftOpId = td_collection.get(0).getText();
                             String uniqueCodeComissionSt = td_collection.get(1).getText();
                             String monitoringPlanIDst = td_collection.get(2).getText();
                             String monitoringPlanFirstYearSt = td_collection.get(3).getText();
@@ -205,9 +206,9 @@ public class EUTLSeleniumTest {
                             String eprtrIdSt = td_collection.get(7).getText();
                             String icaoDesignatorSt = td_collection.get(8).getText();
 
-                            aircraftOpsOutBuff.write(uniqueCodeComissionSt + "\t" + monitoringPlanIDst + "\t" + monitoringPlanFirstYearSt +
-                                    "\t" + monitoringPlanYearExpirySt + "\t" + subsidiaryCompanySt + "\t" +
-                                    parentCompanySt + "\t" + eprtrIdSt + "\t" + icaoDesignatorSt + "\t") ;
+                            aircraftOpsOutBuff.write(aircraftOpId + "\t" + uniqueCodeComissionSt + "\t" + monitoringPlanIDst +
+                                    "\t" + monitoringPlanFirstYearSt + "\t" + monitoringPlanYearExpirySt + "\t" +
+                                    subsidiaryCompanySt + "\t" + parentCompanySt + "\t" + eprtrIdSt + "\t" + icaoDesignatorSt + "\t") ;
 
                             aircraftOpsOutBuff.write(addressInfoSt);
 
