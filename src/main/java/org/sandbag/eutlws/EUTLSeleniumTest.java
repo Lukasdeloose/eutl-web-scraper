@@ -25,8 +25,19 @@ public class EUTLSeleniumTest {
     public static String PERIOD_1_HEADER = "Country\tInstallation ID\tLatest Update\t2008\t2009\t2010\t2011\t2012";
     public static String PERIOD_2_HEADER = "Country\tInstallation ID\tLatest Update\t2013\t2014\t2015\t2016\t2017\t2018\t2019\t2020";
 
-    public static final String INSTALLATIONS_HEADER = "Country\tType\tAccount Holder Name\tID\tCompany Registration Number\tStatus\tType\tName\tMain Address\tSecondary Address\tPostal Code\tCity\tCountry\tInstallation name\tPermit ID\tPermit Entry Date\tPermit Expiry/Revocation Date\tSubsidiary Company\tParent Company\tE-PRTR identification";
-    public static final String AIRCRAFT_OPERATORS_HEADER = "Country\tType\tAccount Holder Name\tID\tCompany Registration Number\tStatus\tType\tName\tMain Address\tSecondary Address\tPostal Code\tCity\tCountry\tUnique Code under Commission Regulation\tMonitoring Plan ID\tMonitoring plan first year of applicability\tMonitoring plan year of expiry\tSubsidiary Company\tParent Company\tE-PRTR identification\tICAO designator";
+    public static final String INSTALLATIONS_HEADER = "Country\tAccount Type\tAccount Holder Name\t" +
+            "Company Registration Number\tAccount Status\tType\tCompany Name\tCompany Main Address\tCompany Secondary Address\t" +
+            "Postal Code\tCompany City\tInstallation ID\tInstallation name\tPermit ID\tPermit Entry Date\t" +
+            "Permit Expiry/Revocation Date\tSubsidiary Company\tParent Company\tE-PRTR identification\t" +
+            "Installation Main Address\tInstallation Secondary Address\tInstallation Postal Code\tInstallation City\t" +
+            "Country ID\tLatitude\tLongitude\tMain Activity";
+
+    public static final String AIRCRAFT_OPERATORS_HEADER = "Country\tAccount Type\tAccount Holder Name\t" +
+            "Company Registration Number\tAccount Status\tType\tCompany Name\tCompany Main Address\tCompany Secondary Address\t" +
+            "Postal Code\tCompany City\tAircraft Operator ID\tUnique Code under Commission Regulation\tMonitoring Plan ID\t" +
+            "Monitoring plan first year of applicability\tMonitoring plan year of expiry\tSubsidiary Company\t" +
+            "Parent Company\tE-PRTR identification\tICAO designator\tInstallation Main address\tInstallation Secondary Address\t" +
+            "Installation Postal Code\tInstallation City\tCountry ID\tLatitude\tLongitude\tMain Activity";
 
     public static final String ALLOWANCES_IN_ALLOCATION_TYPE = "Allowances in Allocation";
     public static final String VERIFIED_EMISSIONS_TYPE = "Verified Emissions";
@@ -110,7 +121,7 @@ public class EUTLSeleniumTest {
                         String nationalAdministratorSt = td_collection.get(0).getText();
                         String accountTypeSt = td_collection.get(1).getText();
                         String accountHolderNameSt = td_collection.get(2).getText();
-                        String idSt = td_collection.get(3).getText();
+                        String installationIdSt = td_collection.get(3).getText();
                         String companyRegistrationNumberSt = td_collection.get(4).getText();
                         String accountStatus = td_collection.get(5).getText();
 
@@ -122,18 +133,19 @@ public class EUTLSeleniumTest {
                         validRow = tr_collection.get(2);
                         td_collection = validRow.findElements(By.xpath("td"));
 
-                        String typeSt = td_collection.get(0).getText();
-                        String nameSt = td_collection.get(1).getText();
-                        String mainAddressSt = td_collection.get(2).getText();
-                        String secondaryAddressSt = td_collection.get(3).getText();
-                        String postalCodeSt = td_collection.get(4).getText();
-                        String citySt = td_collection.get(5).getText();
-                        String countrySt = td_collection.get(6).getText();
+                        String companyTypeSt = td_collection.get(0).getText();
+                        String companyNameSt = td_collection.get(1).getText();
+                        String companyMainAddressSt = td_collection.get(2).getText();
+                        String companySecondaryAddressSt = td_collection.get(3).getText();
+                        String companyPostalCodeSt = td_collection.get(4).getText();
+                        String companyCitySt = td_collection.get(5).getText();
+                        //String countryNameSt = td_collection.get(6).getText();
 
-                        String contentToBeWrittenSt = nationalAdministratorSt + "\t" + accountTypeSt + "\t" + accountHolderNameSt + "\t" + idSt + "\t" +
+
+                        String contentToBeWrittenSt = nationalAdministratorSt + "\t" + accountTypeSt + "\t" + accountHolderNameSt + "\t" +
                                 companyRegistrationNumberSt + "\t" + accountStatus + "\t";
-                        contentToBeWrittenSt += typeSt + "\t" + nameSt + "\t" + mainAddressSt + "\t" + secondaryAddressSt + "\t" +
-                                postalCodeSt + "\t" + citySt + "\t" + countrySt + "\t";
+                        contentToBeWrittenSt += companyTypeSt + "\t" + companyNameSt + "\t" + companyMainAddressSt + "\t"
+                                + companySecondaryAddressSt + "\t" + companyPostalCodeSt + "\t" + companyCitySt + "\t";
 
                         //===============================INFORMATION TABLE==========================
                         //=========================================================================
@@ -154,38 +166,14 @@ public class EUTLSeleniumTest {
 
 
 
-                        //*************************COMPLIANCE INFORMATION++++++++++++++++++++++++
-
-                        List<WebElement> complianceRows = tableDetails.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/div/table/tbody/tr"));
-                        for(int i=2;i<=17;i++){
-                            //System.out.println("i = " + i);
-                            WebElement currentRow = complianceRows.get(i);
-                            List<WebElement> columns = currentRow.findElements(By.xpath("td"));
-
-                            String yearSt = columns.get(1).getText();
-                            String allowancesInAllocationSt = columns.get(2).getText();
-                            String verifiedEmissionsSt = columns.get(3).getText();
-                            String unitsSurrenderedSt = columns.get(4).getText();
-                            //String cumulativeSurrenderedUnitsSt = columns.get(5).getText();
-                            //String cumulativeVerifiedEmissionsSt = columns.get(6).getText();
-                            String complianceCodeSt = columns.get(7).getText();
-                            //System.out.println("yearSt = " + yearSt);
-
-                            installationsCompOutBuff.write(countrySt + "\t" + idSt + "\t" + yearSt + "\t" +
-                                    allowancesInAllocationSt + "\t" + verifiedEmissionsSt + "\t" + unitsSurrenderedSt + "\t" +
-                                    complianceCodeSt + "\n");
-
-                        }
-
-                        installationsCompOutBuff.flush();
-
-
                         if(isAircraft){
 
                             aircraftOpsOutBuff.write(contentToBeWrittenSt);
 
+
                             WebElement dataRow = tr_collection.get(2);
                             td_collection = dataRow.findElements(By.xpath("td"));
+
                             String uniqueCodeComissionSt = td_collection.get(1).getText();
                             String monitoringPlanIDst = td_collection.get(2).getText();
                             String monitoringPlanFirstYearSt = td_collection.get(3).getText();
@@ -197,7 +185,7 @@ public class EUTLSeleniumTest {
 
                             aircraftOpsOutBuff.write(uniqueCodeComissionSt + "\t" + monitoringPlanIDst + "\t" + monitoringPlanFirstYearSt +
                                     "\t" + monitoringPlanYearExpirySt + "\t" + subsidiaryCompanySt + "\t" +
-                                    parentCompanySt + "\t" + eprtrIdSt + "\t" + icaoDesignatorSt + "\n") ;
+                                    parentCompanySt + "\t" + eprtrIdSt + "\t" + icaoDesignatorSt + "\t") ;
 
                             aircraftOpsOutBuff.flush();
 
@@ -219,11 +207,62 @@ public class EUTLSeleniumTest {
 
                             installationsOutBuff.write(installationNameSt + "\t" + permitIDSt + "\t" + permitEntryDateSt +
                                     "\t" + permitExpiryDateSt + "\t" + subsidiaryCompanySt + "\t" + parentCompanySt + "\t"
-                                    + eprtrIdSt + "\n") ;
+                                    + eprtrIdSt + "\t") ;
 
                             installationsOutBuff.flush();
 
                         }
+
+                        //+++++++++++++++++++ADDRESS INFO++++++++++++++++++++++++
+
+                        WebElement addressInformationTable = table_collection.get(1);
+                        tr_collection = addressInformationTable.findElements(By.xpath("tbody/tr"));
+
+                        WebElement dataRow = tr_collection.get(2);
+                        td_collection = dataRow.findElements(By.xpath("td"));
+
+                        String installationMainAddressSt = td_collection.get(0).getText();
+                        String installationSecondaryAddressSt = td_collection.get(1).getText();
+                        String installationPostalCodeSt = td_collection.get(2).getText();
+                        String installationCitySt = td_collection.get(3).getText();
+                        String installationCountryId = td_collection.get(4).getText();
+                        String installationLatitudeSt = td_collection.get(5).getText();
+                        String installationLongitudeSt = td_collection.get(6).getText();
+                        String installationMainActivitySt = td_collection.get(7).getText();
+
+                        String addressInfoSt = installationMainAddressSt + "\t" + installationSecondaryAddressSt + "\t" +
+                                installationPostalCodeSt + "\t" + installationCitySt + "\t" + installationCountryId + "\t" +
+                                installationCountryId + "\t" + installationLatitudeSt + "\t" + installationLongitudeSt + "\t" +
+                                installationMainActivitySt + "\n";
+
+                        installationsOutBuff.write(addressInfoSt);
+                        aircraftOpsOutBuff.write(addressInfoSt);
+
+                        //*************************COMPLIANCE INFORMATION++++++++++++++++++++++++
+
+                        List<WebElement> complianceRows = tableDetails.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/div/table/tbody/tr"));
+                        for(int i=2;i<=17;i++){
+                            //System.out.println("i = " + i);
+                            WebElement currentRow = complianceRows.get(i);
+                            List<WebElement> columns = currentRow.findElements(By.xpath("td"));
+
+                            String yearSt = columns.get(1).getText();
+                            String allowancesInAllocationSt = columns.get(2).getText();
+                            String verifiedEmissionsSt = columns.get(3).getText();
+                            String unitsSurrenderedSt = columns.get(4).getText();
+                            //String cumulativeSurrenderedUnitsSt = columns.get(5).getText();
+                            //String cumulativeVerifiedEmissionsSt = columns.get(6).getText();
+                            String complianceCodeSt = columns.get(7).getText();
+                            //System.out.println("yearSt = " + yearSt);
+
+                            installationsCompOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
+                                    allowancesInAllocationSt + "\t" + verifiedEmissionsSt + "\t" + unitsSurrenderedSt + "\t" +
+                                    complianceCodeSt + "\n");
+
+                        }
+
+
+                        installationsCompOutBuff.flush();
 
 
                         nextButton.click();
