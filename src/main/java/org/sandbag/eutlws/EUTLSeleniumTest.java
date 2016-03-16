@@ -252,12 +252,12 @@ public class EUTLSeleniumTest {
                             List<WebElement> columns = currentRow.findElements(By.xpath("td"));
 
                             String yearSt = columns.get(1).getText();
-                            String allowancesInAllocationSt = columns.get(2).getText();
-                            String verifiedEmissionsSt = columns.get(3).getText();
-                            String unitsSurrenderedSt = columns.get(4).getText();
+                            String allowancesInAllocationSt = columns.get(2).getText().replaceAll("\n", " ");
+                            String verifiedEmissionsSt = columns.get(3).getText().replaceAll("\n"," ");
+                            String unitsSurrenderedSt = columns.get(4).getText().replaceAll("\n", " ");
                             //String cumulativeSurrenderedUnitsSt = columns.get(5).getText();
                             //String cumulativeVerifiedEmissionsSt = columns.get(6).getText();
-                            String complianceCodeSt = columns.get(7).getText();
+                            String complianceCodeSt = columns.get(7).getText().replaceAll("\n"," ");
                             //System.out.println("yearSt = " + yearSt);
 
                             installationsCompOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
