@@ -18,9 +18,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class EUTLSeleniumTest {
 
-    public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","EU","FI","FR","DE","GR","HU",
-                                            "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
-                                            "SK","SI","ES","SE","GB"};
+//    public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","EU","FI","FR","DE","GR","HU",
+//                                            "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
+//                                            "SK","SI","ES","SE","GB"};
+    public static String[] countriesArray = {"CY"};
+
     public static String PERIOD_0_HEADER = "Country\tInstallation ID\tLatest Update\t2005\t2006\t2007";
     public static String PERIOD_1_HEADER = "Country\tInstallation ID\tLatest Update\t2008\t2009\t2010\t2011\t2012";
     public static String PERIOD_2_HEADER = "Country\tInstallation ID\tLatest Update\t2013\t2014\t2015\t2016\t2017\t2018\t2019\t2020";
@@ -44,40 +46,69 @@ public class EUTLSeleniumTest {
     public static final String UNITS_SURRENDERED_TYPE = "Units Surrendered";
     public static final String COMPLIANCE_CODE_TYPE = "Compliance Code";
 
+    public static final String NEW_ENTRANT_RESERVE_CODE = "*****";
+    public static final String NEW_ENTRANT_RESERVE_CODE_REGEXP = "\\*\\*\\*\\*\\*";
+
+    public static final String ARTICLE_10C_CODE = "****";
+    public static final String ARTICLE_10C_CODE_REGEXP = "\\*\\*\\*\\*";
+
     public static final String INSTALLATIONS_COMPLIANCE_DATA_HEADER = "Country\tInstallation ID\tYear\t" +
             ALLOWANCES_IN_ALLOCATION_TYPE + "\t" + VERIFIED_EMISSIONS_TYPE + "\t" + UNITS_SURRENDERED_TYPE + "\t" +
             COMPLIANCE_CODE_TYPE;
 
+    public static final String NER_ALLOCATION_DATA_HEADER = "Country\tInstallation ID\tYear\tNER allocation";
+    public static final String ARTICLE_10C_ALLOCATION_DATA_HEADER = "Country\tInstallation ID\tYear\tArticle 10c allocation";
+
     public static void main(String[] args) throws Exception {
 
 
-        if(args.length != 7){
+        if(args.length != 6){
             System.out.println("This program expects the following parameters: " +
-                    "1. Output CSV file name period 0 \n" +
-                    "2. Output CSV file name period 1 \n" +
-                    "3. Output CSV file name period 2 \n " +
-                    "4. Output CSV Installations file name \n " +
-                    "5. Output CSV Aircraft Operators file name \n" +
-                    "6. Output CSV Installations Compliance Data file name\n" +
-                    "7. Number of concurrent browsers (int)");
+                    "1. Installations folder \n " +
+                    "2. Aircraft operators folder \n" +
+                    "3. Compliance data folder\n" +
+                    "4. NER allocation data file name\n" +
+                    "5. Article 10c data file name\n" +
+                    "6. Number of concurrent browsers (int)");
         }else{
 
-            int numberOfConcurrentBrowsers = Integer.parseInt(args[6]);
+            String installationsFolderSt = args[0];
+            String aircraftOperatorsFolderSt = args[1];
+            String complianceDataFolderSt = args[2];
+            String nerAllocationFileSt = args[3];
+            String article10cFileSt = args[4];
+            int numberOfConcurrentBrowsers = Integer.parseInt(args[5]);
 
-            getOperatorHoldingAccounts(args[3], args[4], args[5],numberOfConcurrentBrowsers);
+            getOperatorHoldingAccounts(installationsFolderSt,
+                                        aircraftOperatorsFolderSt,
+                                        complianceDataFolderSt,
+                                        nerAllocationFileSt,
+                                        article10cFileSt,
+                                        numberOfConcurrentBrowsers);
+
             //getAllocationsToStationaryInstallations(args[0], args[1], args[2],numberOfConcurrentBrowsers);
 
         }
 
     }
 
-    public static void getOperatorHoldingAccounts(String installationsFileSt,
-                                                  String aircraftOpsFileSt,
-                                                  String installationsComplianceDataSt,
+    public static void getOperatorHoldingAccounts(String installationsFolderSt,
+                                                  String aircraftOpsFolderSt,
+                                                  String complianceFolderSt,
+                                                  String nerAllocationFileSt,
+                                                  String article10cFileSt,
                                                   int numberOfConcurrentBrowsers) throws Exception{
 
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
+
+        File nerAllocationFile = new File(nerAllocationFileSt);
+        BufferedWriter nerAllocOutBuff = new BufferedWriter(new FileWriter(nerAllocationFile));
+        nerAllocOutBuff.write(NER_ALLOCATION_DATA_HEADER + "\n");
+
+        File article10cFile = new File(article10cFileSt);
+        BufferedWriter article10cOutBuff = new BufferedWriter(new FileWriter(article10cFile));
+        article10cOutBuff.write(ARTICLE_10C_ALLOCATION_DATA_HEADER + "\n");
 
         for (String countryCode : countriesArray){
 
@@ -89,15 +120,15 @@ public class EUTLSeleniumTest {
                     System.out.println(Thread.currentThread().getName() + " is running");
                     System.out.println("countryCode = " + countryCode);
 
-                    File installationsFile = new File(installationsFileSt.split("\\.")[0] + countryCode + ".csv");
+                    File installationsFile = new File(installationsFolderSt + "/" + countryCode + ".csv");
                     BufferedWriter installationsOutBuff = new BufferedWriter(new FileWriter(installationsFile));
                     installationsOutBuff.write(INSTALLATIONS_HEADER + "\n");
 
-                    File aircraftOpsFile = new File(aircraftOpsFileSt.split("\\.")[0] + countryCode + ".csv");
+                    File aircraftOpsFile = new File(aircraftOpsFolderSt + "/" + countryCode + ".csv");
                     BufferedWriter aircraftOpsOutBuff = new BufferedWriter(new FileWriter(aircraftOpsFile));
                     aircraftOpsOutBuff.write(AIRCRAFT_OPERATORS_HEADER + "\n");
 
-                    File installationsCompDataFile = new File(installationsComplianceDataSt.split("\\.")[0] + countryCode + ".csv");
+                    File installationsCompDataFile = new File(complianceFolderSt + "/" + countryCode + ".csv");
                     BufferedWriter installationsCompOutBuff = new BufferedWriter(new FileWriter(installationsCompDataFile));
                     installationsCompOutBuff.write(INSTALLATIONS_COMPLIANCE_DATA_HEADER + "\n");
 
@@ -223,7 +254,7 @@ public class EUTLSeleniumTest {
                             dataRow = tr_collection_general_info.get(2);
                             td_collection = dataRow.findElements(By.xpath("td"));
 
-                            installationIdSt = td_collection.get(0).getText();
+                            installationIdSt = td_collection.get(0).getText().trim();
                             String installationNameSt = td_collection.get(1).getText();
                             String permitIDSt = td_collection.get(2).getText();
                             String permitEntryDateSt = td_collection.get(3).getText();
@@ -252,7 +283,7 @@ public class EUTLSeleniumTest {
                             List<WebElement> columns = currentRow.findElements(By.xpath("td"));
 
                             String yearSt = columns.get(1).getText();
-                            String allowancesInAllocationSt = columns.get(2).getText().replaceAll("\n", " ");
+                            String allowancesInAllocationSt = columns.get(2).getText();
                             String verifiedEmissionsSt = columns.get(3).getText().replaceAll("\n"," ");
                             String unitsSurrenderedSt = columns.get(4).getText().replaceAll("\n", " ");
                             //String cumulativeSurrenderedUnitsSt = columns.get(5).getText();
@@ -260,9 +291,48 @@ public class EUTLSeleniumTest {
                             String complianceCodeSt = columns.get(7).getText().replaceAll("\n"," ");
                             //System.out.println("yearSt = " + yearSt);
 
+//                            System.out.println("=====================");
+//                            System.out.println("allowancesInAllocationSt = " + allowancesInAllocationSt);
+//                            System.out.println(allowancesInAllocationSt.indexOf(ARTICLE_10C_CODE) );
+//                            System.out.println(allowancesInAllocationSt.indexOf(NEW_ENTRANT_RESERVE_CODE) );
+//                            System.out.println(allowancesInAllocationSt.indexOf("****") );
+//                            System.out.println(allowancesInAllocationSt.indexOf("*****") );
+//                            System.out.println("---------------------");
+
+                            boolean asterisksFound = false;
+
+                            if(allowancesInAllocationSt.indexOf(NEW_ENTRANT_RESERVE_CODE) >=0){
+
+                                String tempValue = allowancesInAllocationSt.split("\n")[1];
+                                tempValue = tempValue.split(NEW_ENTRANT_RESERVE_CODE_REGEXP)[0];
+                                nerAllocOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
+                                        tempValue + "\n");
+
+                                asterisksFound = true;
+
+                            }else if(allowancesInAllocationSt.indexOf(ARTICLE_10C_CODE) >=0){
+
+                                String tempValue = allowancesInAllocationSt.split("\n")[1];
+                                tempValue = tempValue.split(ARTICLE_10C_CODE_REGEXP)[0];
+                                article10cOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
+                                        tempValue + "\n");
+
+                                asterisksFound = true;
+
+                            }
+
+                            if(asterisksFound){
+                                allowancesInAllocationSt = allowancesInAllocationSt.split("\n")[0].trim();
+                            }
+
                             installationsCompOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
                                     allowancesInAllocationSt + "\t" + verifiedEmissionsSt + "\t" + unitsSurrenderedSt + "\t" +
                                     complianceCodeSt + "\n");
+
+
+
+
+
 
                         }
 
@@ -280,6 +350,8 @@ public class EUTLSeleniumTest {
                     installationsOutBuff.close();
                     aircraftOpsOutBuff.close();
                     installationsCompOutBuff.close();
+                    nerAllocOutBuff.flush();
+                    article10cOutBuff.flush();
 
 
 
@@ -293,6 +365,7 @@ public class EUTLSeleniumTest {
         }
 
 
+
         System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
         while(threadPoolExecutor.getActiveCount() > 0){
             TimeUnit.SECONDS.sleep(30);
@@ -300,6 +373,8 @@ public class EUTLSeleniumTest {
             System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
         }
         threadPoolExecutor.shutdown();
+        nerAllocOutBuff.close();
+        article10cOutBuff.close();
 
 
     }
