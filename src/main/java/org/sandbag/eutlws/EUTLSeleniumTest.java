@@ -18,10 +18,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class EUTLSeleniumTest {
 
-//    public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","EU","FI","FR","DE","GR","HU",
-//                                            "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
-//                                            "SK","SI","ES","SE","GB"};
-    public static String[] countriesArray = {"CY"};
+    public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU",
+                                            "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
+                                            "SK","SI","ES","SE","GB"};
+    //public static String[] countriesArray = {"EU"};
 
     public static String PERIOD_0_HEADER = "Country\tInstallation ID\tLatest Update\t2005\t2006\t2007";
     public static String PERIOD_1_HEADER = "Country\tInstallation ID\tLatest Update\t2008\t2009\t2010\t2011\t2012";
@@ -299,39 +299,47 @@ public class EUTLSeleniumTest {
 //                            System.out.println(allowancesInAllocationSt.indexOf("*****") );
 //                            System.out.println("---------------------");
 
-                            boolean asterisksFound = false;
+                            String[] newLineSplit = allowancesInAllocationSt.split("\n");
 
-                            if(allowancesInAllocationSt.indexOf(NEW_ENTRANT_RESERVE_CODE) >=0){
+                            if(newLineSplit.length == 3){
 
-                                String tempValue = allowancesInAllocationSt.split("\n")[1];
-                                tempValue = tempValue.split(NEW_ENTRANT_RESERVE_CODE_REGEXP)[0];
+                                //-------------------NER ALLOCATIONS----------------------
+                                String nerValue = newLineSplit[2].split(NEW_ENTRANT_RESERVE_CODE_REGEXP)[0].trim();
                                 nerAllocOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
-                                        tempValue + "\n");
+                                        nerValue + "\n");
 
-                                asterisksFound = true;
-
-                            }else if(allowancesInAllocationSt.indexOf(ARTICLE_10C_CODE) >=0){
-
-                                String tempValue = allowancesInAllocationSt.split("\n")[1];
-                                tempValue = tempValue.split(ARTICLE_10C_CODE_REGEXP)[0];
+                                //-------------------ARTICLE 10C ALLOCATIONS----------------------
+                                String article10cValue = newLineSplit[1].split(ARTICLE_10C_CODE_REGEXP)[0].trim();
                                 article10cOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
-                                        tempValue + "\n");
+                                        article10cValue + "\n");
 
-                                asterisksFound = true;
+                                allowancesInAllocationSt = newLineSplit[0].trim();
 
+
+                            }else if(newLineSplit.length == 2){
+
+                                String otherValue = newLineSplit[1];
+
+                                if(otherValue.indexOf(NEW_ENTRANT_RESERVE_CODE) > 0){
+                                    //-------------------NER ALLOCATIONS----------------------
+                                    String nerValue = otherValue.split(NEW_ENTRANT_RESERVE_CODE_REGEXP)[0].trim();
+                                    nerAllocOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
+                                            nerValue + "\n");
+
+                                }else if(otherValue.indexOf(ARTICLE_10C_CODE) > 0){
+                                    //-------------------ARTICLE 10C ALLOCATIONS----------------------
+                                    String article10cValue = otherValue.split(ARTICLE_10C_CODE_REGEXP)[0].trim();
+                                    article10cOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
+                                            article10cValue + "\n");
+                                }
+
+                                allowancesInAllocationSt = newLineSplit[0].trim();
                             }
 
-                            if(asterisksFound){
-                                allowancesInAllocationSt = allowancesInAllocationSt.split("\n")[0].trim();
-                            }
-
+                            //------------------STANDARD ALLOCATIONS---------------------
                             installationsCompOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
                                     allowancesInAllocationSt + "\t" + verifiedEmissionsSt + "\t" + unitsSurrenderedSt + "\t" +
                                     complianceCodeSt + "\n");
-
-
-
-
 
 
                         }
