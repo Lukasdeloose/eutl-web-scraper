@@ -38,8 +38,8 @@ public class EUTLSeleniumTest {
             "Company Registration Number\tAccount Status\tType\tCompany Name\tCompany Main Address\tCompany Secondary Address\t" +
             "Postal Code\tCompany City\tAircraft Operator ID\tUnique Code under Commission Regulation\tMonitoring Plan ID\t" +
             "Monitoring plan first year of applicability\tMonitoring plan year of expiry\tSubsidiary Company\t" +
-            "Parent Company\tE-PRTR identification\tICAO designator\tInstallation Main address\tInstallation Secondary Address\t" +
-            "Installation Postal Code\tInstallation City\tCountry ID\tLatitude\tLongitude\tMain Activity";
+            "Parent Company\tE-PRTR identification\tICAO designator\tAircraft Operator Main address\tAircraft Operator Secondary Address\t" +
+            "Aircraft Operator Postal Code\tAircraft Operator City\tCountry ID\tLatitude\tLongitude\tMain Activity";
 
     public static final String ALLOWANCES_IN_ALLOCATION_TYPE = "Allowances in Allocation";
     public static final String VERIFIED_EMISSIONS_TYPE = "Verified Emissions";
