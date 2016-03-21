@@ -18,9 +18,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class EUTLSeleniumTest {
 
-    public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU",
-                                            "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
-                                            "SK","SI","ES","SE","GB"};
+    public static String[] countriesArray = {"AT", "BE", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
+            "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
+            "SK", "SI", "ES", "SE", "GB"};
     //public static String[] countriesArray = {"CY"};
 
     public static String PERIOD_0_HEADER = "Country\tInstallation ID\tLatest Update\t2005\t2006\t2007";
@@ -59,36 +59,136 @@ public class EUTLSeleniumTest {
     public static final String NER_ALLOCATION_DATA_HEADER = "Country\tInstallation ID\tYear\tNER allocation";
     public static final String ARTICLE_10C_ALLOCATION_DATA_HEADER = "Country\tInstallation ID\tYear\tArticle 10c allocation";
 
+    public static final String OFFSET_ENTITLEMENTS_INSTALLATIONS_DATA_HEADER = "Country\tInstallation ID\tValue";
+    public static final String OFFSET_ENTITLEMENTS_AIRCRAFT_OPERATORS_DATA_HEADER = "Country\tInstallation ID\tValue";
+
     public static void main(String[] args) throws Exception {
 
 
-        if(args.length != 6){
+        if (args.length != 8) {
             System.out.println("This program expects the following parameters: " +
                     "1. Installations folder \n " +
                     "2. Aircraft operators folder \n" +
                     "3. Compliance data folder\n" +
                     "4. NER allocation data file name\n" +
                     "5. Article 10c data file name\n" +
-                    "6. Number of concurrent browsers (int)");
-        }else{
+                    "6. Installations Offset Entitlements File\n" +
+                    "7. Aircraft operators Offset Entitlements File\n" +
+                    "8. Number of concurrent browsers (int)");
+        } else {
 
             String installationsFolderSt = args[0];
             String aircraftOperatorsFolderSt = args[1];
             String complianceDataFolderSt = args[2];
             String nerAllocationFileSt = args[3];
             String article10cFileSt = args[4];
-            int numberOfConcurrentBrowsers = Integer.parseInt(args[5]);
+            String installationsOffsetEntitlementsFileSt = args[5];
+            String aircraftOperatorsOffsetEntitlementsFileSt = args[6];
+            int numberOfConcurrentBrowsers = Integer.parseInt(args[7]);
 
-            getOperatorHoldingAccounts(installationsFolderSt,
-                                        aircraftOperatorsFolderSt,
-                                        complianceDataFolderSt,
-                                        nerAllocationFileSt,
-                                        article10cFileSt,
-                                        numberOfConcurrentBrowsers);
+            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
+                    aircraftOperatorsOffsetEntitlementsFileSt);
+
+//            getOperatorHoldingAccounts(installationsFolderSt,
+//                    aircraftOperatorsFolderSt,
+//                    complianceDataFolderSt,
+//                    nerAllocationFileSt,
+//                    article10cFileSt,
+//                    numberOfConcurrentBrowsers);
 
             //getAllocationsToStationaryInstallations(args[0], args[1], args[2],numberOfConcurrentBrowsers);
 
         }
+
+    }
+
+    public static void getOffsetEntitlements(String installationsOffsetEntitlementsFSt,
+                                             String aircraftOperatorsOffsetEntitlementsFileSt) throws Exception {
+
+
+
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+
+        File installationsFile = new File(installationsOffsetEntitlementsFSt);
+        BufferedWriter installationsBuff = new BufferedWriter(new FileWriter(installationsFile));
+        installationsBuff.write(OFFSET_ENTITLEMENTS_INSTALLATIONS_DATA_HEADER + "\n");
+
+        File aircrafOpsFile = new File(aircraftOperatorsOffsetEntitlementsFileSt);
+        BufferedWriter aircraftOpsBuff = new BufferedWriter(new FileWriter(aircrafOpsFile));
+        aircraftOpsBuff.write(OFFSET_ENTITLEMENTS_AIRCRAFT_OPERATORS_DATA_HEADER + "\n");
+
+        // Lambda Runnable
+        Runnable offsetEntitlementsRunnable = () -> {
+            try {
+
+                // Create a new instance of the Firefox driver
+                WebDriver driver = new FirefoxDriver();
+
+                driver.get("http://ec.europa.eu/environment/ets/ice.do?languageCode=en");
+
+                WebElement searchButton = driver.findElement(By.id("btnSearch"));
+                searchButton.click();
+
+                WebElement nextButton = driver.findElement(By.name("nextList"));
+
+                boolean endReached = false;
+
+                while (!endReached) {
+
+
+                    WebElement entitlements_table = driver.findElement(By.id("tblEntitlements"));
+                    List<WebElement> tr_colletion = entitlements_table.findElements(By.xpath("id('tblEntitlements')/tbody/tr"));
+
+                    for(int rowCounter=2; rowCounter<tr_colletion.size();rowCounter++){
+                        List<WebElement> td_collection = tr_colletion.get(rowCounter).findElements(By.xpath("td"));
+                        String countrySt = td_collection.get(0).getText().trim();
+                        String entityTypeSt = td_collection.get(1).getText().trim();
+                        String idSt = td_collection.get(3).getText().trim();
+                        String valueSt = td_collection.get(4).getText().trim();
+
+                        if(entityTypeSt.equals("Installation")){
+                            installationsBuff.write(countrySt + "\t" + idSt + "\t" + valueSt + "\n");
+                        }else if(entityTypeSt.equals("Aircraft Operator")){
+                            aircraftOpsBuff.write(countrySt + "\t" + idSt + "\t" + valueSt + "\n");
+                        }
+                    }
+
+
+                    if (nextButton.getAttribute("disabled") != null) {
+                        endReached = true;
+                    }
+
+                    nextButton.click();
+                    nextButton = driver.findElement(By.name("nextList"));
+
+                    installationsBuff.flush();
+                    aircraftOpsBuff.flush();
+
+                }
+
+
+                driver.quit();
+
+                installationsBuff.close();
+                aircraftOpsBuff.close();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+        };
+
+        threadPoolExecutor.submit(offsetEntitlementsRunnable);
+
+        System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
+        while (threadPoolExecutor.getActiveCount() > 0) {
+            TimeUnit.SECONDS.sleep(30);
+            System.out.println("Just woke up! ");
+            System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
+        }
+        threadPoolExecutor.shutdown();
 
     }
 
@@ -97,7 +197,7 @@ public class EUTLSeleniumTest {
                                                   String complianceFolderSt,
                                                   String nerAllocationFileSt,
                                                   String article10cFileSt,
-                                                  int numberOfConcurrentBrowsers) throws Exception{
+                                                  int numberOfConcurrentBrowsers) throws Exception {
 
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
@@ -110,7 +210,7 @@ public class EUTLSeleniumTest {
         BufferedWriter article10cOutBuff = new BufferedWriter(new FileWriter(article10cFile));
         article10cOutBuff.write(ARTICLE_10C_ALLOCATION_DATA_HEADER + "\n");
 
-        for (String countryCode : countriesArray){
+        for (String countryCode : countriesArray) {
 
             // Lambda Runnable
             Runnable countryRunnable = () -> {
@@ -144,7 +244,7 @@ public class EUTLSeleniumTest {
 
                     boolean endReached = false;
 
-                    while(!endReached){
+                    while (!endReached) {
 
                         //-------------------------------------------------------------------------
                         //------------------------GENERAL INFORMATION------------------------------
@@ -222,7 +322,7 @@ public class EUTLSeleniumTest {
                                 installationPostalCodeSt + "\t" + installationCitySt + "\t" + installationCountryId + "\t" +
                                 installationLatitudeSt + "\t" + installationLongitudeSt + "\t" + installationMainActivitySt + "\n";
 
-                        if(isAircraft){
+                        if (isAircraft) {
 
                             aircraftOpsOutBuff.write(contentToBeWrittenSt);
 
@@ -241,15 +341,14 @@ public class EUTLSeleniumTest {
 
                             aircraftOpsOutBuff.write(aircraftOpId + "\t" + uniqueCodeComissionSt + "\t" + monitoringPlanIDst +
                                     "\t" + monitoringPlanFirstYearSt + "\t" + monitoringPlanYearExpirySt + "\t" +
-                                    subsidiaryCompanySt + "\t" + parentCompanySt + "\t" + eprtrIdSt + "\t" + icaoDesignatorSt + "\t") ;
+                                    subsidiaryCompanySt + "\t" + parentCompanySt + "\t" + eprtrIdSt + "\t" + icaoDesignatorSt + "\t");
 
                             aircraftOpsOutBuff.write(addressInfoSt);
 
                             aircraftOpsOutBuff.flush();
 
 
-
-                        }else{
+                        } else {
 
                             installationsOutBuff.write(contentToBeWrittenSt);
 
@@ -267,7 +366,7 @@ public class EUTLSeleniumTest {
 
                             installationsOutBuff.write(installationIdSt + "\t" + installationNameSt + "\t" + permitIDSt +
                                     "\t" + permitEntryDateSt + "\t" + permitExpiryDateSt + "\t" + subsidiaryCompanySt +
-                                    "\t" + parentCompanySt + "\t" + eprtrIdSt + "\t") ;
+                                    "\t" + parentCompanySt + "\t" + eprtrIdSt + "\t");
 
                             installationsOutBuff.write(addressInfoSt);
 
@@ -279,18 +378,18 @@ public class EUTLSeleniumTest {
                         //*************************COMPLIANCE INFORMATION++++++++++++++++++++++++
 
                         List<WebElement> complianceRows = tableDetails.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/div/table/tbody/tr"));
-                        for(int i=2;i<=17;i++){
+                        for (int i = 2; i <= 17; i++) {
                             //System.out.println("i = " + i);
                             WebElement currentRow = complianceRows.get(i);
                             List<WebElement> columns = currentRow.findElements(By.xpath("td"));
 
                             String yearSt = columns.get(1).getText();
                             String allowancesInAllocationSt = columns.get(2).getText();
-                            String verifiedEmissionsSt = columns.get(3).getText().replaceAll("\n"," ");
+                            String verifiedEmissionsSt = columns.get(3).getText().replaceAll("\n", " ");
                             String unitsSurrenderedSt = columns.get(4).getText().replaceAll("\n", " ");
                             //String cumulativeSurrenderedUnitsSt = columns.get(5).getText();
                             //String cumulativeVerifiedEmissionsSt = columns.get(6).getText();
-                            String complianceCodeSt = columns.get(7).getText().replaceAll("\n"," ");
+                            String complianceCodeSt = columns.get(7).getText().replaceAll("\n", " ");
                             //System.out.println("yearSt = " + yearSt);
 
 //                            System.out.println("=====================");
@@ -303,7 +402,7 @@ public class EUTLSeleniumTest {
 
                             String[] newLineSplit = allowancesInAllocationSt.split("\n");
 
-                            if(newLineSplit.length == 3){
+                            if (newLineSplit.length == 3) {
 
                                 //-------------------NER ALLOCATIONS----------------------
                                 String nerValue = newLineSplit[2].split(NEW_ENTRANT_RESERVE_CODE_REGEXP)[0].trim();
@@ -318,17 +417,17 @@ public class EUTLSeleniumTest {
                                 allowancesInAllocationSt = newLineSplit[0].trim();
 
 
-                            }else if(newLineSplit.length == 2){
+                            } else if (newLineSplit.length == 2) {
 
                                 String otherValue = newLineSplit[1];
 
-                                if(otherValue.indexOf(NEW_ENTRANT_RESERVE_CODE) > 0){
+                                if (otherValue.indexOf(NEW_ENTRANT_RESERVE_CODE) > 0) {
                                     //-------------------NER ALLOCATIONS----------------------
                                     String nerValue = otherValue.split(NEW_ENTRANT_RESERVE_CODE_REGEXP)[0].trim();
                                     nerAllocOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
                                             nerValue + "\n");
 
-                                }else if(otherValue.indexOf(ARTICLE_10C_CODE) > 0){
+                                } else if (otherValue.indexOf(ARTICLE_10C_CODE) > 0) {
                                     //-------------------ARTICLE 10C ALLOCATIONS----------------------
                                     String article10cValue = otherValue.split(ARTICLE_10C_CODE_REGEXP)[0].trim();
                                     article10cOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
@@ -349,7 +448,7 @@ public class EUTLSeleniumTest {
 
                         installationsCompOutBuff.flush();
 
-                        if(nextButton.getAttribute("disabled") != null){
+                        if (nextButton.getAttribute("disabled") != null) {
                             endReached = true;
                         }
 
@@ -368,8 +467,7 @@ public class EUTLSeleniumTest {
                     article10cOutBuff.flush();
 
 
-
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -379,9 +477,8 @@ public class EUTLSeleniumTest {
         }
 
 
-
         System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
-        while(threadPoolExecutor.getActiveCount() > 0){
+        while (threadPoolExecutor.getActiveCount() > 0) {
             TimeUnit.SECONDS.sleep(30);
             System.out.println("Just woke up! ");
             System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
@@ -397,13 +494,13 @@ public class EUTLSeleniumTest {
             String filePeriod0St,
             String filePeriod1St,
             String filePeriod2St,
-            int numberOfConcurrentBrowsers) throws Exception{
+            int numberOfConcurrentBrowsers) throws Exception {
 
 
         ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
 
 
-        for(String country : countriesArray){
+        for (String country : countriesArray) {
 
             // Lambda Runnable
             Runnable countryRunnable = () -> {
@@ -425,16 +522,16 @@ public class EUTLSeleniumTest {
                     // not the implementation.
                     WebDriver driver = new FirefoxDriver();
 
-                    for(int period=0; period<=2; period++){
+                    for (int period = 0; period <= 2; period++) {
                         // And now use this to visit Google
-                        driver.get("http://ec.europa.eu/environment/ets/nap.do?languageCode=en&nap.registryCodeArray="+
-                                country +"&periodCode=" + period + "&search=Search&currentSortSettings=");
+                        driver.get("http://ec.europa.eu/environment/ets/nap.do?languageCode=en&nap.registryCodeArray=" +
+                                country + "&periodCode=" + period + "&search=Search&currentSortSettings=");
 
 
                         List<WebElement> tempElements = driver.findElements(By.id("lnkNapInformation"));
                         WebElement elementToBeClicked = null;
 
-                        for(WebElement element : tempElements){
+                        for (WebElement element : tempElements) {
                             //System.out.println("element = " + element);
                             String tempHrefl = element.getAttribute("href");
                             System.out.println("tempHrefl = " + tempHrefl);
@@ -442,12 +539,12 @@ public class EUTLSeleniumTest {
                             WebElement spanElement = element.findElement(By.tagName("span"));
                             String spanText = spanElement.getText();
                             System.out.println("spanText = " + spanText);
-                            if(spanText.equals("Installations linked to this Allocation Table")){
+                            if (spanText.equals("Installations linked to this Allocation Table")) {
                                 elementToBeClicked = element;
                             }
                         }
 
-                        if(elementToBeClicked != null){
+                        if (elementToBeClicked != null) {
                             // Now submit the form. WebDriver will find the form for us from the element
                             elementToBeClicked.click();
 
@@ -459,20 +556,19 @@ public class EUTLSeleniumTest {
 
                             int pageNumber = 0;
 
-                            while(table_element != null){
+                            while (table_element != null) {
 
                                 System.out.println("Country: " + country + " Period: " + period + " Page: " + pageNumber);
 
-                                List<WebElement> tr_collection=table_element.findElements(By.xpath("id('tblNapList')/tbody/tr"));
+                                List<WebElement> tr_collection = table_element.findElements(By.xpath("id('tblNapList')/tbody/tr"));
 
-                                if(period == 0){
+                                if (period == 0) {
 
-                                    for(int rowCounter=3; rowCounter<tr_collection.size(); rowCounter++)
-                                    {
+                                    for (int rowCounter = 3; rowCounter < tr_collection.size(); rowCounter++) {
 
                                         WebElement trElement = tr_collection.get(rowCounter);
 
-                                        List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
+                                        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
 
                                         String installationIDst = td_collection.get(0).getText();
                                         String latestUpdateSt = td_collection.get(6).getText();
@@ -486,14 +582,13 @@ public class EUTLSeleniumTest {
                                         //System.out.println("Country: " + country + " Row: " + rowCounter + " completed");
                                     }
 
-                                }else if(period == 1){
+                                } else if (period == 1) {
 
-                                    for(int rowCounter=3; rowCounter<tr_collection.size(); rowCounter++)
-                                    {
+                                    for (int rowCounter = 3; rowCounter < tr_collection.size(); rowCounter++) {
 
                                         WebElement trElement = tr_collection.get(rowCounter);
 
-                                        List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
+                                        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
 
                                         String installationIDst = td_collection.get(0).getText();
                                         String latestUpdateSt = td_collection.get(6).getText();
@@ -510,14 +605,13 @@ public class EUTLSeleniumTest {
 
                                         //System.out.println("Country: " + country + " Row: " + rowCounter + " completed");
                                     }
-                                }else if(period == 2){
+                                } else if (period == 2) {
 
-                                    for(int rowCounter=3; rowCounter<(tr_collection.size()-3); rowCounter++)
-                                    {
+                                    for (int rowCounter = 3; rowCounter < (tr_collection.size() - 3); rowCounter++) {
 
                                         WebElement trElement = tr_collection.get(rowCounter);
 
-                                        List<WebElement> td_collection=trElement.findElements(By.xpath("td"));
+                                        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
 
                                         String installationIDst = td_collection.get(0).getText();
                                         String latestUpdateSt = td_collection.get(6).getText();
@@ -533,7 +627,7 @@ public class EUTLSeleniumTest {
                                         outBuffPeriod2.write(country + "\t" + installationIDst + "\t" + latestUpdateSt +
                                                 "\t" + year2013St + "\t" + year2014St + "\t" + year2015St + "\t" +
                                                 year2016St + "\t" + year2017St + "\t" + year2017St + "\t"
-                                                + year2018St + "\t"  + year2019St + "\t"  + year2020St + "\t");
+                                                + year2018St + "\t" + year2019St + "\t" + year2020St + "\t");
 
 
                                         //System.out.println("Country: " + country + " Row: " + rowCounter + " completed");
@@ -541,14 +635,12 @@ public class EUTLSeleniumTest {
                                 }
 
 
-
-
                                 //----------------NEXT PAGE OF RESULTS BUTTON-----------------------
                                 WebElement nextButton = driver.findElement(By.name("nextList"));
-                                if(nextButton.getAttribute("disabled") == null){
+                                if (nextButton.getAttribute("disabled") == null) {
                                     nextButton.click();
                                     table_element = driver.findElement(By.id("tblNapList"));
-                                }else{
+                                } else {
                                     table_element = null;
                                 }
 
@@ -573,7 +665,7 @@ public class EUTLSeleniumTest {
                     outBuffPeriod1.close();
                     outBuffPeriod2.close();
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -585,14 +677,12 @@ public class EUTLSeleniumTest {
 
         System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
 
-        while(threadPoolExecutor.getActiveCount() > 0){
+        while (threadPoolExecutor.getActiveCount() > 0) {
             TimeUnit.SECONDS.sleep(30);
             System.out.println("Just woke up! ");
             System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
         }
         threadPoolExecutor.shutdown();
-
-
 
 
     }
