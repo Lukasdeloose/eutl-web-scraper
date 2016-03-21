@@ -18,10 +18,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class EUTLSeleniumTest {
 
-    public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU",
-                                            "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
-                                            "SK","SI","ES","SE","GB"};
-    //public static String[] countriesArray = {"EU"};
+//    public static String[] countriesArray = {"AT","BE","HR","CY","CZ","DK","EE","FI","FR","DE","GR","HU",
+//                                            "IS","IE","IT","LV","LI","LT","LU","MT","NL","NO","PL","PT","RO",
+//                                            "SK","SI","ES","SE","GB"};
+    public static String[] countriesArray = {"CY"};
 
     public static String PERIOD_0_HEADER = "Country\tInstallation ID\tLatest Update\t2005\t2006\t2007";
     public static String PERIOD_1_HEADER = "Country\tInstallation ID\tLatest Update\t2008\t2009\t2010\t2011\t2012";
@@ -142,7 +142,9 @@ public class EUTLSeleniumTest {
 
                     WebElement nextButton = driver.findElement(By.name("nextList"));
 
-                    while(nextButton.getAttribute("disabled") == null){
+                    boolean endReached = false;
+
+                    while(!endReached){
 
                         //-------------------------------------------------------------------------
                         //------------------------GENERAL INFORMATION------------------------------
@@ -347,9 +349,13 @@ public class EUTLSeleniumTest {
 
                         installationsCompOutBuff.flush();
 
+                        if(nextButton.getAttribute("disabled") != null){
+                            endReached = true;
+                        }
 
                         nextButton.click();
                         nextButton = driver.findElement(By.name("nextList"));
+
                     }
 
 
