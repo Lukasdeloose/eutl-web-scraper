@@ -62,10 +62,17 @@ public class EUTLSeleniumTest {
     public static final String OFFSET_ENTITLEMENTS_INSTALLATIONS_DATA_HEADER = "Country\tInstallation ID\tValue";
     public static final String OFFSET_ENTITLEMENTS_AIRCRAFT_OPERATORS_DATA_HEADER = "Country\tInstallation ID\tValue";
 
+    public static final String OFFSETS_HEADER = "Country\tInstallation ID\tOrginating Registry\tUnit Type\tAmount\t" +
+            "Original Commitment Period\tApplicable Commitment Period\tYear of Compliance\tLULUCF Activity\tProject identifier\t" +
+            "Track\tExpiry Date";
+
+    public static final String AAU_OFFSET = "AAU";
+    public static final String CER_OFFSET = "CER";
+
     public static void main(String[] args) throws Exception {
 
 
-        if (args.length != 8) {
+        if (args.length != 9) {
             System.out.println("This program expects the following parameters: " +
                     "1. Installations folder \n " +
                     "2. Aircraft operators folder \n" +
@@ -74,7 +81,8 @@ public class EUTLSeleniumTest {
                     "5. Article 10c data file name\n" +
                     "6. Installations Offset Entitlements File\n" +
                     "7. Aircraft operators Offset Entitlements File\n" +
-                    "8. Number of concurrent browsers (int)");
+                    "8. Offsets folder\n" +
+                    "9. Number of concurrent browsers (int)");
         } else {
 
             String installationsFolderSt = args[0];
@@ -84,10 +92,14 @@ public class EUTLSeleniumTest {
             String article10cFileSt = args[4];
             String installationsOffsetEntitlementsFileSt = args[5];
             String aircraftOperatorsOffsetEntitlementsFileSt = args[6];
-            int numberOfConcurrentBrowsers = Integer.parseInt(args[7]);
+            String offsetsFolderSt = args[7];
+            int numberOfConcurrentBrowsers = Integer.parseInt(args[8]);
 
-            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
-                    aircraftOperatorsOffsetEntitlementsFileSt);
+//            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
+//                    aircraftOperatorsOffsetEntitlementsFileSt);
+
+            getOffsets(offsetsFolderSt,
+                    numberOfConcurrentBrowsers);
 
 //            getOperatorHoldingAccounts(installationsFolderSt,
 //                    aircraftOperatorsFolderSt,
@@ -191,6 +203,139 @@ public class EUTLSeleniumTest {
         threadPoolExecutor.shutdown();
 
     }
+
+
+    public static void getOffsets(String offsetsFolderSt,
+                                  int numberOfConcurrentBrowsers) throws Exception {
+
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
+
+
+        for (String countryCode : countriesArray) {
+
+            // Lambda Runnable
+            Runnable countryRunnable = () -> {
+
+                try {
+
+                    System.out.println(Thread.currentThread().getName() + " is running");
+                    System.out.println("countryCode = " + countryCode);
+
+                    File offsetsDataFile = new File(offsetsFolderSt + "/" + countryCode + ".csv");
+                    BufferedWriter offsetsBuff = new BufferedWriter(new FileWriter(offsetsDataFile));
+                    offsetsBuff.write(OFFSETS_HEADER + "\n");
+
+                    // Create a new instance of the Firefox driver
+                    WebDriver driver = new FirefoxDriver();
+
+                    driver.get("http://ec.europa.eu/environment/ets/ohaDetails.do?permitIdentifier=&accountID=&form=oha&installationIdentifier=&complianceStatus=&account.registryCodes=" + countryCode + "&primaryAuthRep=&searchType=oha&identifierInReg=&mainActivityType=-1&buttonAction=select&account.registryCode=&languageCode=en&installationName=&accountHolder=&accountStatus=&accountType=&action=&registryCode=&periods.selectedItems=1&returnURL=");
+
+                    WebElement nextButton = driver.findElement(By.name("nextList"));
+
+                    boolean endReached = false;
+
+                    while (!endReached) {
+
+                        //-------------------------------------------------------------------------
+                        //------------------------GENERAL INFORMATION------------------------------
+
+                        WebElement tableGeneralInfo = driver.findElement(By.id("tblAccountGeneralInfo"));
+                        List<WebElement> tr_collection_account_general_info = tableGeneralInfo.findElements(By.xpath("id('tblAccountGeneralInfo')/tbody/tr"));
+
+                        WebElement generalInfoRow = tr_collection_account_general_info.get(2);
+                        List<WebElement> td_collection = generalInfoRow.findElements(By.xpath("td"));
+
+                        String installationIdSt = td_collection.get(3).getText();
+
+                        //===============================INFORMATION TABLE==========================
+                        //=========================================================================
+
+                        WebElement tableDetails = driver.findElement(By.id("tblChildDetails"));
+                        List<WebElement> tr_collection_child_details = tableDetails.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/div/table/tbody/tr"));
+
+                        //System.out.println("tr_collection.size() = " + tr_collection_child_details.size());
+
+                        WebElement validRow = tr_collection_child_details.get(2);
+                        List<WebElement> td_elements = validRow.findElements(By.xpath("td"));
+                        WebElement detailsElement = td_elements.get(td_elements.size()-1);
+                        System.out.println("detailsElement.getText() = " + detailsElement.getText());
+                        detailsElement.click();
+
+                        //********************************************************************
+                        //*********************SURRENDERED UNITS TABLE**************************
+
+                        WebElement surrenderedUnitsTable = driver.findElement(By.id("tblChildDetails"));
+                        List<WebElement> rows = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/table/tbody/tr"));
+
+                        //System.out.println("rows.size() = " + rows.size());
+
+                        for (int rowCounter=2;rowCounter<rows.size();rowCounter++){
+                            WebElement currentRow = rows.get(rowCounter);
+                            List<WebElement> columns = currentRow.findElements(By.xpath("td"));
+
+                            String originatingRegistrySt = columns.get(0).getText().trim();
+                            String unitTypeSt = columns.get(1).getText().trim();
+                            String amountSt = columns.get(2).getText().trim();
+                            String originalCommitmentPeriodSt = columns.get(3).getText().trim();
+                            String applicableCommitmentPeriodSt = columns.get(4).getText().trim();
+                            String yearForComplianceSt = columns.get(5).getText().trim();
+                            String lulucfActivitySt = columns.get(6).getText().trim();
+                            String projectIDst = columns.get(7).getText().trim();
+                            String trackSt = columns.get(8).getText().trim();
+                            String expiryDateSt = columns.get(9).getText().trim();
+
+//                            String typeSt = AAU_OFFSET;
+//                            if(unitTypeSt.startsWith("CER")){
+//                                typeSt = CER_OFFSET;
+//                            }
+
+                            offsetsBuff.write(countryCode + "\t" + installationIdSt + "\t" + originatingRegistrySt + "\t" +
+                                            unitTypeSt + "\t" + amountSt + "\t" + originalCommitmentPeriodSt + "\t" +
+                                            applicableCommitmentPeriodSt + "\t" + yearForComplianceSt + "\t" +
+                                            lulucfActivitySt + "\t" + projectIDst + "\t" + trackSt + "\t" + expiryDateSt + "\n");
+                        }
+
+                        offsetsBuff.flush();
+
+                        driver.navigate().back();
+                        nextButton = driver.findElement(By.name("nextList"));
+
+
+                        if (nextButton.getAttribute("disabled") != null) {
+                            endReached = true;
+                        }
+
+                        nextButton.click();
+                        nextButton = driver.findElement(By.name("nextList"));
+                    }
+
+
+                    driver.quit();
+
+                    offsetsBuff.close();
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            };
+
+            threadPoolExecutor.submit(countryRunnable);
+        }
+
+
+        System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
+        while (threadPoolExecutor.getActiveCount() > 0) {
+            TimeUnit.SECONDS.sleep(30);
+            System.out.println("Just woke up! ");
+            System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
+        }
+        threadPoolExecutor.shutdown();
+
+    }
+
+
 
     public static void getOperatorHoldingAccounts(String installationsFolderSt,
                                                   String aircraftOpsFolderSt,
@@ -582,56 +727,6 @@ public class EUTLSeleniumTest {
                                         //System.out.println("Country: " + country + " Row: " + rowCounter + " completed");
                                     }
 
-                                } else if (period == 1) {
-
-                                    for (int rowCounter = 3; rowCounter < tr_collection.size(); rowCounter++) {
-
-                                        WebElement trElement = tr_collection.get(rowCounter);
-
-                                        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
-
-                                        String installationIDst = td_collection.get(0).getText();
-                                        String latestUpdateSt = td_collection.get(6).getText();
-                                        String year2008St = td_collection.get(7).getText();
-                                        String year2009St = td_collection.get(8).getText();
-                                        String year2010St = td_collection.get(9).getText();
-                                        String year2011St = td_collection.get(10).getText();
-                                        String year2012St = td_collection.get(11).getText();
-
-                                        outBuffPeriod1.write(country + "\t" + installationIDst + "\t" + latestUpdateSt +
-                                                "\t" + year2008St + "\t" + year2009St + "\t" + year2010St + "\t" +
-                                                year2011St + "\t" + year2012St + "\n");
-
-
-                                        //System.out.println("Country: " + country + " Row: " + rowCounter + " completed");
-                                    }
-                                } else if (period == 2) {
-
-                                    for (int rowCounter = 3; rowCounter < (tr_collection.size() - 3); rowCounter++) {
-
-                                        WebElement trElement = tr_collection.get(rowCounter);
-
-                                        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
-
-                                        String installationIDst = td_collection.get(0).getText();
-                                        String latestUpdateSt = td_collection.get(6).getText();
-                                        String year2013St = td_collection.get(7).getText();
-                                        String year2014St = td_collection.get(8).getText();
-                                        String year2015St = td_collection.get(9).getText();
-                                        String year2016St = td_collection.get(10).getText();
-                                        String year2017St = td_collection.get(11).getText();
-                                        String year2018St = td_collection.get(11).getText();
-                                        String year2019St = td_collection.get(11).getText();
-                                        String year2020St = td_collection.get(11).getText();
-
-                                        outBuffPeriod2.write(country + "\t" + installationIDst + "\t" + latestUpdateSt +
-                                                "\t" + year2013St + "\t" + year2014St + "\t" + year2015St + "\t" +
-                                                year2016St + "\t" + year2017St + "\t" + year2017St + "\t"
-                                                + year2018St + "\t" + year2019St + "\t" + year2020St + "\t");
-
-
-                                        //System.out.println("Country: " + country + " Row: " + rowCounter + " completed");
-                                    }
                                 }
 
 
