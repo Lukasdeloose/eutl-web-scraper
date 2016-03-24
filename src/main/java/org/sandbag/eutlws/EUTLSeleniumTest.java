@@ -95,31 +95,55 @@ public class EUTLSeleniumTest {
             String offsetsFolderSt = args[7];
             int numberOfConcurrentBrowsers = Integer.parseInt(args[8]);
 
-//            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
-//                    aircraftOperatorsOffsetEntitlementsFileSt);
+
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            //+++++++++++++++++++++++NER ALLOCATION FILE+++++++++++++++++++++++++++++++++++++++++++++
+
+            File nerAllocationFile = new File(nerAllocationFileSt);
+            BufferedWriter nerAllocOutBuff = new BufferedWriter(new FileWriter(nerAllocationFile));
+            nerAllocOutBuff.write(NER_ALLOCATION_DATA_HEADER + "\n");
+
+
+            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            //+++++++++++++++++++++++ARTICLE 10C FILE++++++++++++++++++++++++++++++++++++++++++++++++
+
+            File article10cFile = new File(article10cFileSt);
+            BufferedWriter article10cOutBuff = new BufferedWriter(new FileWriter(article10cFile));
+            article10cOutBuff.write(ARTICLE_10C_ALLOCATION_DATA_HEADER + "\n");
+
+            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
+
+            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
+                    aircraftOperatorsOffsetEntitlementsFileSt,
+                    threadPoolExecutor);
 
             getOffsets(offsetsFolderSt,
-                    numberOfConcurrentBrowsers);
+                    threadPoolExecutor);
 
-//            getOperatorHoldingAccounts(installationsFolderSt,
-//                    aircraftOperatorsFolderSt,
-//                    complianceDataFolderSt,
-//                    nerAllocationFileSt,
-//                    article10cFileSt,
-//                    numberOfConcurrentBrowsers);
+            getOperatorHoldingAccounts(installationsFolderSt,
+                    aircraftOperatorsFolderSt,
+                    complianceDataFolderSt,
+                    nerAllocOutBuff,
+                    article10cOutBuff,
+                    threadPoolExecutor);
 
-            //getAllocationsToStationaryInstallations(args[0], args[1], args[2],numberOfConcurrentBrowsers);
+            System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
+            while (threadPoolExecutor.getActiveCount() > 0) {
+                TimeUnit.SECONDS.sleep(30);
+                System.out.println("Just woke up! ");
+                System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
+            }
+            threadPoolExecutor.shutdown();
+            nerAllocOutBuff.close();
+            article10cOutBuff.close();
 
         }
 
     }
 
     public static void getOffsetEntitlements(String installationsOffsetEntitlementsFSt,
-                                             String aircraftOperatorsOffsetEntitlementsFileSt) throws Exception {
-
-
-
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(1);
+                                             String aircraftOperatorsOffsetEntitlementsFileSt,
+                                             ThreadPoolExecutor threadPoolExecutor) throws Exception {
 
         File installationsFile = new File(installationsOffsetEntitlementsFSt);
         BufferedWriter installationsBuff = new BufferedWriter(new FileWriter(installationsFile));
@@ -135,6 +159,7 @@ public class EUTLSeleniumTest {
 
                 // Create a new instance of the Firefox driver
                 WebDriver driver = new FirefoxDriver();
+                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
                 driver.get("http://ec.europa.eu/environment/ets/ice.do?languageCode=en");
 
@@ -194,21 +219,11 @@ public class EUTLSeleniumTest {
 
         threadPoolExecutor.submit(offsetEntitlementsRunnable);
 
-        System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
-        while (threadPoolExecutor.getActiveCount() > 0) {
-            TimeUnit.SECONDS.sleep(30);
-            System.out.println("Just woke up! ");
-            System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
-        }
-        threadPoolExecutor.shutdown();
-
     }
 
 
     public static void getOffsets(String offsetsFolderSt,
-                                  int numberOfConcurrentBrowsers) throws Exception {
-
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
+                                  ThreadPoolExecutor threadPoolExecutor) throws Exception {
 
 
         for (String countryCode : countriesArray) {
@@ -227,6 +242,7 @@ public class EUTLSeleniumTest {
 
                     // Create a new instance of the Firefox driver
                     WebDriver driver = new FirefoxDriver();
+                    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
                     driver.get("http://ec.europa.eu/environment/ets/ohaDetails.do?permitIdentifier=&accountID=&form=oha&installationIdentifier=&complianceStatus=&account.registryCodes=" + countryCode + "&primaryAuthRep=&searchType=oha&identifierInReg=&mainActivityType=-1&buttonAction=select&account.registryCode=&languageCode=en&installationName=&accountHolder=&accountStatus=&accountType=&action=&registryCode=&periods.selectedItems=1&returnURL=");
 
@@ -325,14 +341,6 @@ public class EUTLSeleniumTest {
         }
 
 
-        System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
-        while (threadPoolExecutor.getActiveCount() > 0) {
-            TimeUnit.SECONDS.sleep(30);
-            System.out.println("Just woke up! ");
-            System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
-        }
-        threadPoolExecutor.shutdown();
-
     }
 
 
@@ -340,20 +348,10 @@ public class EUTLSeleniumTest {
     public static void getOperatorHoldingAccounts(String installationsFolderSt,
                                                   String aircraftOpsFolderSt,
                                                   String complianceFolderSt,
-                                                  String nerAllocationFileSt,
-                                                  String article10cFileSt,
-                                                  int numberOfConcurrentBrowsers) throws Exception {
+                                                  BufferedWriter nerAllocOutBuff,
+                                                  BufferedWriter article10cOutBuff,
+                                                  ThreadPoolExecutor threadPoolExecutor) throws Exception {
 
-
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
-
-        File nerAllocationFile = new File(nerAllocationFileSt);
-        BufferedWriter nerAllocOutBuff = new BufferedWriter(new FileWriter(nerAllocationFile));
-        nerAllocOutBuff.write(NER_ALLOCATION_DATA_HEADER + "\n");
-
-        File article10cFile = new File(article10cFileSt);
-        BufferedWriter article10cOutBuff = new BufferedWriter(new FileWriter(article10cFile));
-        article10cOutBuff.write(ARTICLE_10C_ALLOCATION_DATA_HEADER + "\n");
 
         for (String countryCode : countriesArray) {
 
@@ -379,6 +377,7 @@ public class EUTLSeleniumTest {
 
                     // Create a new instance of the Firefox driver
                     WebDriver driver = new FirefoxDriver();
+                    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
                     driver.get("http://ec.europa.eu/environment/ets/oha.do?form=oha&languageCode=en&account.registryCodes=" + countryCode + "&accountHolder=&installationIdentifier=&installationName=&permitIdentifier=&mainActivityType=-1&search=Search&searchType=oha&currentSortSettings=&resultList.currentPageNumber=1");
 
@@ -535,15 +534,7 @@ public class EUTLSeleniumTest {
                             //String cumulativeSurrenderedUnitsSt = columns.get(5).getText();
                             //String cumulativeVerifiedEmissionsSt = columns.get(6).getText();
                             String complianceCodeSt = columns.get(7).getText().replaceAll("\n", " ");
-                            //System.out.println("yearSt = " + yearSt);
 
-//                            System.out.println("=====================");
-//                            System.out.println("allowancesInAllocationSt = " + allowancesInAllocationSt);
-//                            System.out.println(allowancesInAllocationSt.indexOf(ARTICLE_10C_CODE) );
-//                            System.out.println(allowancesInAllocationSt.indexOf(NEW_ENTRANT_RESERVE_CODE) );
-//                            System.out.println(allowancesInAllocationSt.indexOf("****") );
-//                            System.out.println(allowancesInAllocationSt.indexOf("*****") );
-//                            System.out.println("---------------------");
 
                             String[] newLineSplit = allowancesInAllocationSt.split("\n");
 
@@ -622,16 +613,6 @@ public class EUTLSeleniumTest {
         }
 
 
-        System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
-        while (threadPoolExecutor.getActiveCount() > 0) {
-            TimeUnit.SECONDS.sleep(30);
-            System.out.println("Just woke up! ");
-            System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
-        }
-        threadPoolExecutor.shutdown();
-        nerAllocOutBuff.close();
-        article10cOutBuff.close();
-
 
     }
 
@@ -666,6 +647,7 @@ public class EUTLSeleniumTest {
                     // Notice that the remainder of the code relies on the interface,
                     // not the implementation.
                     WebDriver driver = new FirefoxDriver();
+                    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
                     for (int period = 0; period <= 2; period++) {
                         // And now use this to visit Google
