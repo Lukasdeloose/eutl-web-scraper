@@ -18,10 +18,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class EUTLSeleniumTest {
 
-    public static String[] countriesArray = {"AT", "BE", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
-            "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
-            "SK", "SI", "ES", "SE", "GB"};
-    //public static String[] countriesArray = {"CY"};
+//    public static String[] countriesArray = {"AT", "BE", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
+//            "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
+//            "SK", "SI", "ES", "SE", "GB"};
+    public static String[] countriesArray = {"CZ"};
 
     public static String PERIOD_0_HEADER = "Country\tInstallation ID\tLatest Update\t2005\t2006\t2007";
     public static String PERIOD_1_HEADER = "Country\tInstallation ID\tLatest Update\t2008\t2009\t2010\t2011\t2012";
@@ -113,19 +113,19 @@ public class EUTLSeleniumTest {
 
             ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
 
-            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
-                    aircraftOperatorsOffsetEntitlementsFileSt,
-                    threadPoolExecutor);
+//            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
+//                    aircraftOperatorsOffsetEntitlementsFileSt,
+//                    threadPoolExecutor);
 
             getOffsets(offsetsFolderSt,
                     threadPoolExecutor);
 
-            getOperatorHoldingAccounts(installationsFolderSt,
-                    aircraftOperatorsFolderSt,
-                    complianceDataFolderSt,
-                    nerAllocOutBuff,
-                    article10cOutBuff,
-                    threadPoolExecutor);
+//            getOperatorHoldingAccounts(installationsFolderSt,
+//                    aircraftOperatorsFolderSt,
+//                    complianceDataFolderSt,
+//                    nerAllocOutBuff,
+//                    article10cOutBuff,
+//                    threadPoolExecutor);
 
             System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
             while (threadPoolExecutor.getActiveCount() > 0) {
@@ -280,10 +280,6 @@ public class EUTLSeleniumTest {
                         //********************************************************************
                         //*********************SURRENDERED UNITS TABLE**************************
 
-                        WebElement surrenderedUnitsTable = driver.findElement(By.id("tblChildDetails"));
-                        List<WebElement> rows = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/table/tbody/tr"));
-
-
                         boolean nextButtonFound = false;
 
                         int pagesPassedCounter = 0;
@@ -291,7 +287,11 @@ public class EUTLSeleniumTest {
 
                         do{
 
-                            List<WebElement> nextButtonSurrenderedUnitsList = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/input[@value='Next']"));
+                            WebElement surrenderedUnitsTable = driver.findElement(By.id("tblChildDetails"));
+                            List<WebElement> rows = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/table/tbody/tr"));
+
+
+                            List<WebElement> nextButtonSurrenderedUnitsList = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/input[@value='Next>']"));
                             WebElement nextButtonSurrenderedUnits = null;
 
                             if(nextButtonSurrenderedUnitsList.size() > 0){

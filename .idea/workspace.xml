@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c17a59ce-cdcd-4552-a644-f63b37401068" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLSeleniumTest.java" afterPath="$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLSeleniumTest.java" />
     </list>
     <ignored path="eutl-web-scraper.iws" />
@@ -34,8 +33,8 @@
       <file leaf-file-name="EUTLSeleniumTest.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLSeleniumTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6226415">
-              <caret line="337" column="80" selection-start-line="337" selection-start-column="80" selection-end-line="337" selection-end-column="80" />
+            <state vertical-scroll-proportion="-1.4632653">
+              <caret line="280" column="96" selection-start-line="280" selection-start-column="96" selection-end-line="280" selection-end-column="96" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -409,7 +408,7 @@
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="org.sandbag.eutlws.EUTLSeleniumTest" />
       <option name="VM_PARAMETERS" value="-Xmx2G" />
-      <option name="PROGRAM_PARAMETERS" value="$PROJECT_DIR$/../../EUTL_data/web_scrape/installations $PROJECT_DIR$/../../EUTL_data/web_scrape/aircraft_operators $PROJECT_DIR$/../../EUTL_data/web_scrape/compliance $PROJECT_DIR$/../../EUTL_data/web_scrape/NERallocation.csv $PROJECT_DIR$/../../EUTL_data/web_scrape/Article10callocation.csv $PROJECT_DIR$/../../EUTL_data/web_scrape/InstallationsOffsetEntitlements.csv $PROJECT_DIR$/../../EUTL_data/web_scrape/AircraftOpsOffsetEntitlements.csv $PROJECT_DIR$/../../EUTL_data/web_scrape/offsets 5" />
+      <option name="PROGRAM_PARAMETERS" value="$PROJECT_DIR$/../../EUTL_data/web_scrape/installations $PROJECT_DIR$/../../EUTL_data/web_scrape/aircraft_operators $PROJECT_DIR$/../../EUTL_data/web_scrape/compliance $PROJECT_DIR$/../../EUTL_data/web_scrape/NERallocation.csv $PROJECT_DIR$/../../EUTL_data/web_scrape/Article10callocation.csv $PROJECT_DIR$/../../EUTL_data/web_scrape/InstallationsOffsetEntitlements.csv $PROJECT_DIR$/../../EUTL_data/web_scrape/AircraftOpsOffsetEntitlements.csv $PROJECT_DIR$/../../EUTL_data/web_scrape/offsets 1" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -452,7 +451,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32972324" sideWeight="0.5258064" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30379745" sideWeight="0.47419354" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34982738" sideWeight="0.47419354" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -815,8 +814,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLSeleniumTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6226415">
-          <caret line="337" column="80" selection-start-line="337" selection-start-column="80" selection-end-line="337" selection-end-column="80" />
+        <state vertical-scroll-proportion="-1.4632653">
+          <caret line="280" column="96" selection-start-line="280" selection-start-column="96" selection-end-line="280" selection-end-column="96" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
