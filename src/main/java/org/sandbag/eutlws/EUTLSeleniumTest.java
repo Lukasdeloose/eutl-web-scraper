@@ -274,7 +274,7 @@ public class EUTLSeleniumTest {
                         WebElement validRow = tr_collection_child_details.get(2);
                         List<WebElement> td_elements = validRow.findElements(By.xpath("td"));
                         WebElement detailsElement = td_elements.get(td_elements.size()-1);
-                        System.out.println("detailsElement.getText() = " + detailsElement.getText());
+                        //System.out.println("detailsElement.getText() = " + detailsElement.getText());
                         detailsElement.click();
 
                         //********************************************************************
@@ -283,37 +283,71 @@ public class EUTLSeleniumTest {
                         WebElement surrenderedUnitsTable = driver.findElement(By.id("tblChildDetails"));
                         List<WebElement> rows = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/table/tbody/tr"));
 
-                        //System.out.println("rows.size() = " + rows.size());
 
-                        for (int rowCounter=2;rowCounter<rows.size();rowCounter++){
-                            WebElement currentRow = rows.get(rowCounter);
-                            List<WebElement> columns = currentRow.findElements(By.xpath("td"));
+                        boolean nextButtonFound = false;
 
-                            String originatingRegistrySt = columns.get(0).getText().trim();
-                            String unitTypeSt = columns.get(1).getText().trim();
-                            String amountSt = columns.get(2).getText().trim();
-                            String originalCommitmentPeriodSt = columns.get(3).getText().trim();
-                            String applicableCommitmentPeriodSt = columns.get(4).getText().trim();
-                            String yearForComplianceSt = columns.get(5).getText().trim();
-                            String lulucfActivitySt = columns.get(6).getText().trim();
-                            String projectIDst = columns.get(7).getText().trim();
-                            String trackSt = columns.get(8).getText().trim();
-                            String expiryDateSt = columns.get(9).getText().trim();
+                        int pagesPassedCounter = 0;
+
+
+                        do{
+
+                            List<WebElement> nextButtonSurrenderedUnitsList = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/input[@value='Next']"));
+                            WebElement nextButtonSurrenderedUnits = null;
+
+                            if(nextButtonSurrenderedUnitsList.size() > 0){
+                                nextButtonSurrenderedUnits = nextButtonSurrenderedUnitsList.get(0);
+                                nextButtonFound = true;
+                                System.out.println("NEXT BUTTON FOUND!");
+                            }
+
+                            for (int rowCounter=2;rowCounter<rows.size();rowCounter++){
+                                WebElement currentRow = rows.get(rowCounter);
+                                List<WebElement> columns = currentRow.findElements(By.xpath("td"));
+
+                                String originatingRegistrySt = columns.get(0).getText().trim();
+                                String unitTypeSt = columns.get(1).getText().trim();
+                                String amountSt = columns.get(2).getText().trim();
+                                String originalCommitmentPeriodSt = columns.get(3).getText().trim();
+                                String applicableCommitmentPeriodSt = columns.get(4).getText().trim();
+                                String yearForComplianceSt = columns.get(5).getText().trim();
+                                String lulucfActivitySt = columns.get(6).getText().trim();
+                                String projectIDst = columns.get(7).getText().trim();
+                                String trackSt = columns.get(8).getText().trim();
+                                String expiryDateSt = columns.get(9).getText().trim();
 
 //                            String typeSt = AAU_OFFSET;
 //                            if(unitTypeSt.startsWith("CER")){
 //                                typeSt = CER_OFFSET;
 //                            }
 
-                            offsetsBuff.write(countryCode + "\t" + installationIdSt + "\t" + originatingRegistrySt + "\t" +
-                                            unitTypeSt + "\t" + amountSt + "\t" + originalCommitmentPeriodSt + "\t" +
-                                            applicableCommitmentPeriodSt + "\t" + yearForComplianceSt + "\t" +
-                                            lulucfActivitySt + "\t" + projectIDst + "\t" + trackSt + "\t" + expiryDateSt + "\n");
+                                offsetsBuff.write(countryCode + "\t" + installationIdSt + "\t" + originatingRegistrySt + "\t" +
+                                        unitTypeSt + "\t" + amountSt + "\t" + originalCommitmentPeriodSt + "\t" +
+                                        applicableCommitmentPeriodSt + "\t" + yearForComplianceSt + "\t" +
+                                        lulucfActivitySt + "\t" + projectIDst + "\t" + trackSt + "\t" + expiryDateSt + "\n");
+                            }
+
+                            offsetsBuff.flush();
+
+                            pagesPassedCounter++;
+
+                            if(nextButtonFound){
+                                if(nextButtonSurrenderedUnits.getAttribute("disabled") != null){
+                                    System.out.println("Next button is disabled... leaving the loop");
+                                    break;
+                                }else{
+                                    System.out.println("Clicking on next button!");
+                                    nextButtonSurrenderedUnits.click();
+                                }
+                            }
+
+                        }while(nextButtonFound);
+                        //System.out.println("rows.size() = " + rows.size());
+
+
+                        for(int i=0;i<pagesPassedCounter;i++){
+                            driver.navigate().back();
                         }
 
-                        offsetsBuff.flush();
-
-                        driver.navigate().back();
                         nextButton = driver.findElement(By.name("nextList"));
 
 
