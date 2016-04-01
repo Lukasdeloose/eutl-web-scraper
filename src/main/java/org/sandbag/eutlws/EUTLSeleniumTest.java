@@ -113,19 +113,19 @@ public class EUTLSeleniumTest {
 
             ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
 
-//            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
-//                    aircraftOperatorsOffsetEntitlementsFileSt,
-//                    threadPoolExecutor);
+            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
+                    aircraftOperatorsOffsetEntitlementsFileSt,
+                    threadPoolExecutor);
 
             getOffsets(offsetsFolderSt,
                     threadPoolExecutor);
 
-//            getOperatorHoldingAccounts(installationsFolderSt,
-//                    aircraftOperatorsFolderSt,
-//                    complianceDataFolderSt,
-//                    nerAllocOutBuff,
-//                    article10cOutBuff,
-//                    threadPoolExecutor);
+            getOperatorHoldingAccounts(installationsFolderSt,
+                    aircraftOperatorsFolderSt,
+                    complianceDataFolderSt,
+                    nerAllocOutBuff,
+                    article10cOutBuff,
+                    threadPoolExecutor);
 
             System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
             while (threadPoolExecutor.getActiveCount() > 0) {
