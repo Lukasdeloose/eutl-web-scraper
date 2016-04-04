@@ -6,4 +6,4 @@ New version of the EUTL web scraper
 ### Basic checks
  
  * All countries from the European Union exist
- * Number of total installations and aircraft operators per country is consistent with that shown in the EUTL website
+ * Number of _**total installations and aircraft operators per country**_ is consistent with that shown in the EUTL website
