@@ -3,7 +3,9 @@ package org.sandbag.eutlws;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.*;
 import java.util.List;
@@ -86,6 +88,10 @@ public class EUTLSeleniumTest {
             String offsetsFolderSt = args[7];
             int numberOfConcurrentBrowsers = Integer.parseInt(args[8]);
 
+            //avoiding warning messages from WebDriver
+            java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.SEVERE);
+
+
 
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             //+++++++++++++++++++++++NER ALLOCATION FILE+++++++++++++++++++++++++++++++++++++++++++++
@@ -149,17 +155,22 @@ public class EUTLSeleniumTest {
             try {
 
                 // Create a new instance of the Firefox driver
-                WebDriver driver = new FirefoxDriver();
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+                WebDriver driver = new HtmlUnitDriver();
+                WebDriverWait wait = new WebDriverWait(driver, 10);
+
+                //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
                 driver.get("http://ec.europa.eu/environment/ets/ice.do?languageCode=en");
 
                 WebElement searchButton = driver.findElement(By.id("btnSearch"));
+                wait.until(ExpectedConditions.elementToBeClickable(By.id("btnSearch")));
                 searchButton.click();
 
                 WebElement nextButton = driver.findElement(By.name("nextList"));
 
                 boolean endReached = false;
+
+                int offsetEntitlementsCounter = 0;
 
                 while (!endReached) {
 
@@ -191,6 +202,11 @@ public class EUTLSeleniumTest {
 
                     installationsBuff.flush();
                     aircraftOpsBuff.flush();
+
+                    offsetEntitlementsCounter++;
+                    if(offsetEntitlementsCounter % 10 == 0){
+                        System.out.println(offsetEntitlementsCounter + " pages of offset entitlements already imported");
+                    }
 
                 }
 
@@ -224,24 +240,31 @@ public class EUTLSeleniumTest {
 
                 try {
 
-                    System.out.println(Thread.currentThread().getName() + " is running");
-                    System.out.println("countryCode = " + countryCode);
+                    System.out.println("(Offsets) " + Thread.currentThread().getName() + " is running");
+                    System.out.println("(Offsets) countryCode = " + countryCode);
 
                     File offsetsDataFile = new File(offsetsFolderSt + "/" + countryCode + ".csv");
                     BufferedWriter offsetsBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(offsetsDataFile),"UTF-8"));
                     offsetsBuff.write(OFFSETS_HEADER + "\n");
 
                     // Create a new instance of the Firefox driver
-                    WebDriver driver = new FirefoxDriver();
-                    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+                    WebDriver driver = new HtmlUnitDriver();
+                    WebDriverWait wait = new WebDriverWait(driver, 10);
+
+                    //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
                     driver.get("http://ec.europa.eu/environment/ets/ohaDetails.do?permitIdentifier=&accountID=&form=oha&installationIdentifier=&complianceStatus=&account.registryCodes=" + countryCode + "&primaryAuthRep=&searchType=oha&identifierInReg=&mainActivityType=-1&buttonAction=select&account.registryCode=&languageCode=en&installationName=&accountHolder=&accountStatus=&accountType=&action=&registryCode=&periods.selectedItems=1&returnURL=");
 
-                    WebElement nextButton = driver.findElement(By.name("nextList"));
+                    WebElement nextButton;
 
                     boolean endReached = false;
 
+                    int offsetsCounter = 0;
+
                     while (!endReached) {
+
+                        String urlToGoBackTo = driver.getCurrentUrl();
+
 
                         //-------------------------------------------------------------------------
                         //------------------------GENERAL INFORMATION------------------------------
@@ -254,10 +277,13 @@ public class EUTLSeleniumTest {
 
                         String installationIdSt = td_collection.get(3).getText();
 
+                        //System.out.println("installationIdSt = " + installationIdSt);
+
                         //===============================INFORMATION TABLE==========================
                         //=========================================================================
 
                         WebElement tableDetails = driver.findElement(By.id("tblChildDetails"));
+
                         List<WebElement> tr_collection_child_details = tableDetails.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/div/table/tbody/tr"));
 
                         //System.out.println("tr_collection.size() = " + tr_collection_child_details.size());
@@ -265,22 +291,25 @@ public class EUTLSeleniumTest {
                         WebElement validRow = tr_collection_child_details.get(2);
                         List<WebElement> td_elements = validRow.findElements(By.xpath("td"));
                         WebElement detailsElement = td_elements.get(td_elements.size()-1);
-                        //System.out.println("detailsElement.getText() = " + detailsElement.getText());
-                        detailsElement.click();
+
+                        String nextUrlValueSt = detailsElement.findElement(By.tagName("a")).getAttribute("href");
+                        //System.out.println("nextUrlValueSt = " + nextUrlValueSt);
+                        driver.get(nextUrlValueSt);
 
                         //********************************************************************
                         //*********************SURRENDERED UNITS TABLE**************************
 
                         boolean nextButtonFound = false;
 
-                        int pagesPassedCounter = 0;
-
+                        //System.out.println("driver.getCurrentUrl() = " + driver.getCurrentUrl());
 
                         do{
 
                             WebElement surrenderedUnitsTable = driver.findElement(By.id("tblChildDetails"));
+
                             List<WebElement> rows = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/table/tbody/tr"));
 
+                            //System.out.println("rows.size() = " + rows.size());
 
                             List<WebElement> nextButtonSurrenderedUnitsList = surrenderedUnitsTable.findElements(By.xpath("id('tblChildDetails')/tbody/tr/td/table/tbody/tr/td/div/input[@value='Next>']"));
                             WebElement nextButtonSurrenderedUnits = null;
@@ -288,7 +317,7 @@ public class EUTLSeleniumTest {
                             if(nextButtonSurrenderedUnitsList.size() > 0){
                                 nextButtonSurrenderedUnits = nextButtonSurrenderedUnitsList.get(0);
                                 nextButtonFound = true;
-                                System.out.println("NEXT BUTTON FOUND!");
+                                //System.out.println("NEXT BUTTON FOUND!");
                             }
 
                             for (int rowCounter=2;rowCounter<rows.size();rowCounter++){
@@ -310,29 +339,26 @@ public class EUTLSeleniumTest {
                                         unitTypeSt + "\t" + amountSt + "\t" + originalCommitmentPeriodSt + "\t" +
                                         applicableCommitmentPeriodSt + "\t" + yearForComplianceSt + "\t" +
                                         lulucfActivitySt + "\t" + projectIDst + "\t" + trackSt + "\t" + expiryDateSt + "\n");
+                                //System.out.println("writing offset file..... " + countryCode);
                             }
 
                             offsetsBuff.flush();
-
-                            pagesPassedCounter++;
+                            //System.out.println(countryCode + " offsets file flushed!");
 
                             if(nextButtonFound){
                                 if(nextButtonSurrenderedUnits.getAttribute("disabled") != null){
-                                    System.out.println("Next button is disabled... leaving the loop");
+                                    //System.out.println("Next button is disabled... leaving the loop");
                                     break;
                                 }else{
-                                    System.out.println("Clicking on next button!");
+                                    //System.out.println("Clicking on next button!");
                                     nextButtonSurrenderedUnits.click();
                                 }
                             }
 
                         }while(nextButtonFound);
-                        //System.out.println("rows.size() = " + rows.size());
 
 
-                        for(int i=0;i<pagesPassedCounter;i++){
-                            driver.navigate().back();
-                        }
+                        driver.get(urlToGoBackTo);
 
                         nextButton = driver.findElement(By.name("nextList"));
 
@@ -341,8 +367,17 @@ public class EUTLSeleniumTest {
                             endReached = true;
                         }
 
+                        System.out.println("URL now! " + driver.getCurrentUrl());
+                        WebDriverWait nextButtonWait = new WebDriverWait(driver, 10);
+                        wait.until(ExpectedConditions.elementToBeClickable(nextButton));
+
                         nextButton.click();
                         nextButton = driver.findElement(By.name("nextList"));
+
+                        offsetsCounter++;
+                        if(offsetsCounter % 20 == 0){
+                            System.out.println(offsetsCounter + " offsets already retrieved for country: " + countryCode);
+                        }
                     }
 
 
@@ -380,8 +415,8 @@ public class EUTLSeleniumTest {
 
                 try {
 
-                    System.out.println(Thread.currentThread().getName() + " is running");
-                    System.out.println("countryCode = " + countryCode);
+                    System.out.println("(OHAs) " + Thread.currentThread().getName() + " is running");
+                    System.out.println("Get OHAs countryCode = " + countryCode);
 
                     File installationsFile = new File(installationsFolderSt + "/" + countryCode + ".csv");
                     BufferedWriter installationsOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(installationsFile),"UTF-8"));
@@ -396,8 +431,8 @@ public class EUTLSeleniumTest {
                     installationsCompOutBuff.write(INSTALLATIONS_COMPLIANCE_DATA_HEADER + "\n");
 
                     // Create a new instance of the Firefox driver
-                    WebDriver driver = new FirefoxDriver();
-                    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+                    WebDriver driver = new HtmlUnitDriver();
+                    //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
                     driver.get("http://ec.europa.eu/environment/ets/oha.do?form=oha&languageCode=en&account.registryCodes=" + countryCode + "&accountHolder=&installationIdentifier=&installationName=&permitIdentifier=&mainActivityType=-1&search=Search&searchType=oha&currentSortSettings=&resultList.currentPageNumber=1");
 
@@ -407,6 +442,8 @@ public class EUTLSeleniumTest {
                     WebElement nextButton = driver.findElement(By.name("nextList"));
 
                     boolean endReached = false;
+
+                    int operatorHoldingAccountCounter = 0;
 
                     while (!endReached) {
 
@@ -610,6 +647,11 @@ public class EUTLSeleniumTest {
 
                         nextButton.click();
                         nextButton = driver.findElement(By.name("nextList"));
+
+                        operatorHoldingAccountCounter++;
+                        if(operatorHoldingAccountCounter % 20 == 0){
+                            System.out.println(operatorHoldingAccountCounter + " OHAs already retrieved for country: " + countryCode);
+                        }
 
                     }
 
