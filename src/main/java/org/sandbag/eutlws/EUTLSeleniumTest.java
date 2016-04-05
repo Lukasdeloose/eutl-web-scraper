@@ -16,14 +16,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class EUTLSeleniumTest {
 
-//    public static String[] countriesArray = {"AT", "BE", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
-//            "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
-//            "SK", "SI", "ES", "SE", "GB"};
-    public static String[] countriesArray = {"FI", "FR", "IT"};
-
-    public static String PERIOD_0_HEADER = "Country\tInstallation ID\tLatest Update\t2005\t2006\t2007";
-    public static String PERIOD_1_HEADER = "Country\tInstallation ID\tLatest Update\t2008\t2009\t2010\t2011\t2012";
-    public static String PERIOD_2_HEADER = "Country\tInstallation ID\tLatest Update\t2013\t2014\t2015\t2016\t2017\t2018\t2019\t2020";
+    public static String[] countriesArray = {"AT", "BE", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
+            "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
+            "SK", "SI", "ES", "SE", "GB"};
+//    public static String[] countriesArray = {"GR"};
 
     public static final String INSTALLATIONS_HEADER = "Country\tAccount Type\tAccount Holder Name\t" +
             "Company Registration Number\tAccount Status\tType\tCompany Name\tCompany Main Address\tCompany Secondary Address\t" +
@@ -63,9 +59,6 @@ public class EUTLSeleniumTest {
     public static final String OFFSETS_HEADER = "Country\tInstallation ID\tOrginating Registry\tUnit Type\tAmount\t" +
             "Original Commitment Period\tApplicable Commitment Period\tYear of Compliance\tLULUCF Activity\tProject identifier\t" +
             "Track\tExpiry Date";
-
-    public static final String AAU_OFFSET = "AAU";
-    public static final String CER_OFFSET = "CER";
 
     public static void main(String[] args) throws Exception {
 
@@ -111,12 +104,12 @@ public class EUTLSeleniumTest {
 
             ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
 
-//            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
-//                    aircraftOperatorsOffsetEntitlementsFileSt,
-//                    threadPoolExecutor);
-//
-//            getOffsets(offsetsFolderSt,
-//                    threadPoolExecutor);
+            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
+                    aircraftOperatorsOffsetEntitlementsFileSt,
+                    threadPoolExecutor);
+
+            getOffsets(offsetsFolderSt,
+                    threadPoolExecutor);
 
             getOperatorHoldingAccounts(installationsFolderSt,
                     aircraftOperatorsFolderSt,
@@ -312,11 +305,6 @@ public class EUTLSeleniumTest {
                                 String projectIDst = columns.get(7).getText().trim();
                                 String trackSt = columns.get(8).getText().trim();
                                 String expiryDateSt = columns.get(9).getText().trim();
-
-//                            String typeSt = AAU_OFFSET;
-//                            if(unitTypeSt.startsWith("CER")){
-//                                typeSt = CER_OFFSET;
-//                            }
 
                                 offsetsBuff.write(countryCode + "\t" + installationIdSt + "\t" + originatingRegistrySt + "\t" +
                                         unitTypeSt + "\t" + amountSt + "\t" + originalCommitmentPeriodSt + "\t" +
