@@ -5,9 +5,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -18,10 +16,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class EUTLSeleniumTest {
 
-    public static String[] countriesArray = {"AT", "BE", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
-            "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
-            "SK", "SI", "ES", "SE", "GB"};
-    //public static String[] countriesArray = {"CZ"};
+//    public static String[] countriesArray = {"AT", "BE", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
+//            "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
+//            "SK", "SI", "ES", "SE", "GB"};
+    public static String[] countriesArray = {"FI", "FR", "IT"};
 
     public static String PERIOD_0_HEADER = "Country\tInstallation ID\tLatest Update\t2005\t2006\t2007";
     public static String PERIOD_1_HEADER = "Country\tInstallation ID\tLatest Update\t2008\t2009\t2010\t2011\t2012";
@@ -100,7 +98,7 @@ public class EUTLSeleniumTest {
             //+++++++++++++++++++++++NER ALLOCATION FILE+++++++++++++++++++++++++++++++++++++++++++++
 
             File nerAllocationFile = new File(nerAllocationFileSt);
-            BufferedWriter nerAllocOutBuff = new BufferedWriter(new FileWriter(nerAllocationFile));
+            BufferedWriter nerAllocOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nerAllocationFile),"UTF-8"));
             nerAllocOutBuff.write(NER_ALLOCATION_DATA_HEADER + "\n");
 
 
@@ -108,17 +106,17 @@ public class EUTLSeleniumTest {
             //+++++++++++++++++++++++ARTICLE 10C FILE++++++++++++++++++++++++++++++++++++++++++++++++
 
             File article10cFile = new File(article10cFileSt);
-            BufferedWriter article10cOutBuff = new BufferedWriter(new FileWriter(article10cFile));
+            BufferedWriter article10cOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(article10cFile),"UTF-8"));
             article10cOutBuff.write(ARTICLE_10C_ALLOCATION_DATA_HEADER + "\n");
 
             ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
 
-            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
-                    aircraftOperatorsOffsetEntitlementsFileSt,
-                    threadPoolExecutor);
-
-            getOffsets(offsetsFolderSt,
-                    threadPoolExecutor);
+//            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
+//                    aircraftOperatorsOffsetEntitlementsFileSt,
+//                    threadPoolExecutor);
+//
+//            getOffsets(offsetsFolderSt,
+//                    threadPoolExecutor);
 
             getOperatorHoldingAccounts(installationsFolderSt,
                     aircraftOperatorsFolderSt,
@@ -146,11 +144,11 @@ public class EUTLSeleniumTest {
                                              ThreadPoolExecutor threadPoolExecutor) throws Exception {
 
         File installationsFile = new File(installationsOffsetEntitlementsFSt);
-        BufferedWriter installationsBuff = new BufferedWriter(new FileWriter(installationsFile));
+        BufferedWriter installationsBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(installationsFile),"UTF-8"));
         installationsBuff.write(OFFSET_ENTITLEMENTS_INSTALLATIONS_DATA_HEADER + "\n");
 
         File aircrafOpsFile = new File(aircraftOperatorsOffsetEntitlementsFileSt);
-        BufferedWriter aircraftOpsBuff = new BufferedWriter(new FileWriter(aircrafOpsFile));
+        BufferedWriter aircraftOpsBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(aircrafOpsFile),"UTF-8"));
         aircraftOpsBuff.write(OFFSET_ENTITLEMENTS_AIRCRAFT_OPERATORS_DATA_HEADER + "\n");
 
         // Lambda Runnable
@@ -237,7 +235,7 @@ public class EUTLSeleniumTest {
                     System.out.println("countryCode = " + countryCode);
 
                     File offsetsDataFile = new File(offsetsFolderSt + "/" + countryCode + ".csv");
-                    BufferedWriter offsetsBuff = new BufferedWriter(new FileWriter(offsetsDataFile));
+                    BufferedWriter offsetsBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(offsetsDataFile),"UTF-8"));
                     offsetsBuff.write(OFFSETS_HEADER + "\n");
 
                     // Create a new instance of the Firefox driver
@@ -398,15 +396,15 @@ public class EUTLSeleniumTest {
                     System.out.println("countryCode = " + countryCode);
 
                     File installationsFile = new File(installationsFolderSt + "/" + countryCode + ".csv");
-                    BufferedWriter installationsOutBuff = new BufferedWriter(new FileWriter(installationsFile));
+                    BufferedWriter installationsOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(installationsFile),"UTF-8"));
                     installationsOutBuff.write(INSTALLATIONS_HEADER + "\n");
 
                     File aircraftOpsFile = new File(aircraftOpsFolderSt + "/" + countryCode + ".csv");
-                    BufferedWriter aircraftOpsOutBuff = new BufferedWriter(new FileWriter(aircraftOpsFile));
+                    BufferedWriter aircraftOpsOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(aircraftOpsFile),"UTF-8"));
                     aircraftOpsOutBuff.write(AIRCRAFT_OPERATORS_HEADER + "\n");
 
                     File installationsCompDataFile = new File(complianceFolderSt + "/" + countryCode + ".csv");
-                    BufferedWriter installationsCompOutBuff = new BufferedWriter(new FileWriter(installationsCompDataFile));
+                    BufferedWriter installationsCompOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(installationsCompDataFile),"UTF-8"));
                     installationsCompOutBuff.write(INSTALLATIONS_COMPLIANCE_DATA_HEADER + "\n");
 
                     // Create a new instance of the Firefox driver
@@ -646,154 +644,6 @@ public class EUTLSeleniumTest {
             threadPoolExecutor.submit(countryRunnable);
         }
 
-
-
-    }
-
-    public static void getAllocationsToStationaryInstallations(
-            String filePeriod0St,
-            String filePeriod1St,
-            String filePeriod2St,
-            int numberOfConcurrentBrowsers) throws Exception {
-
-
-        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
-
-
-        for (String country : countriesArray) {
-
-            // Lambda Runnable
-            Runnable countryRunnable = () -> {
-                try {
-
-                    File outputFilePeriod0 = new File(filePeriod0St.split("\\.")[0] + country + ".csv");
-                    File outputFilePeriod1 = new File(filePeriod1St.split("\\.")[0] + country + ".csv");
-                    File outputFilePeriod2 = new File(filePeriod2St.split("\\.")[0] + country + ".csv");
-
-                    BufferedWriter outBuffPeriod0 = new BufferedWriter(new FileWriter(outputFilePeriod0));
-                    outBuffPeriod0.write(PERIOD_0_HEADER + "\n");
-                    BufferedWriter outBuffPeriod1 = new BufferedWriter(new FileWriter(outputFilePeriod1));
-                    outBuffPeriod1.write(PERIOD_1_HEADER + "\n");
-                    BufferedWriter outBuffPeriod2 = new BufferedWriter(new FileWriter(outputFilePeriod2));
-                    outBuffPeriod2.write(PERIOD_2_HEADER + "\n");
-
-                    // Create a new instance of the Firefox driver
-                    // Notice that the remainder of the code relies on the interface,
-                    // not the implementation.
-                    WebDriver driver = new FirefoxDriver();
-                    driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
-                    for (int period = 0; period <= 2; period++) {
-                        // And now use this to visit Google
-                        driver.get("http://ec.europa.eu/environment/ets/nap.do?languageCode=en&nap.registryCodeArray=" +
-                                country + "&periodCode=" + period + "&search=Search&currentSortSettings=");
-
-
-                        List<WebElement> tempElements = driver.findElements(By.id("lnkNapInformation"));
-                        WebElement elementToBeClicked = null;
-
-                        for (WebElement element : tempElements) {
-                            //System.out.println("element = " + element);
-                            String tempHrefl = element.getAttribute("href");
-                            System.out.println("tempHrefl = " + tempHrefl);
-
-                            WebElement spanElement = element.findElement(By.tagName("span"));
-                            String spanText = spanElement.getText();
-                            System.out.println("spanText = " + spanText);
-                            if (spanText.equals("Installations linked to this Allocation Table")) {
-                                elementToBeClicked = element;
-                            }
-                        }
-
-                        if (elementToBeClicked != null) {
-                            // Now submit the form. WebDriver will find the form for us from the element
-                            elementToBeClicked.click();
-
-                            Thread.sleep(1000);
-
-                            WebElement table_element = driver.findElement(By.id("tblNapList"));
-
-                            //-----------------------TABLE ELEMENT-------------------------------------------------------------
-
-                            int pageNumber = 0;
-
-                            while (table_element != null) {
-
-                                System.out.println("Country: " + country + " Period: " + period + " Page: " + pageNumber);
-
-                                List<WebElement> tr_collection = table_element.findElements(By.xpath("id('tblNapList')/tbody/tr"));
-
-                                if (period == 0) {
-
-                                    for (int rowCounter = 3; rowCounter < tr_collection.size(); rowCounter++) {
-
-                                        WebElement trElement = tr_collection.get(rowCounter);
-
-                                        List<WebElement> td_collection = trElement.findElements(By.xpath("td"));
-
-                                        String installationIDst = td_collection.get(0).getText();
-                                        String latestUpdateSt = td_collection.get(6).getText();
-                                        String year2005St = td_collection.get(7).getText();
-                                        String year2006St = td_collection.get(8).getText();
-                                        String year2007St = td_collection.get(9).getText();
-
-                                        outBuffPeriod0.write(country + "\t" + installationIDst + "\t" + latestUpdateSt +
-                                                "\t" + year2005St + "\t" + year2006St + "\t" + year2007St + "\n");
-
-                                        //System.out.println("Country: " + country + " Row: " + rowCounter + " completed");
-                                    }
-
-                                }
-
-
-                                //----------------NEXT PAGE OF RESULTS BUTTON-----------------------
-                                WebElement nextButton = driver.findElement(By.name("nextList"));
-                                if (nextButton.getAttribute("disabled") == null) {
-                                    nextButton.click();
-                                    table_element = driver.findElement(By.id("tblNapList"));
-                                } else {
-                                    table_element = null;
-                                }
-
-                                pageNumber++;
-
-                            }
-
-                            outBuffPeriod0.flush();
-                            outBuffPeriod1.flush();
-                            outBuffPeriod2.flush();
-
-                            //-----------------------------------------------------------------------------------------
-                        }
-
-                    }
-
-                    //close WebDriver
-                    driver.quit();
-
-                    //Close output files
-                    outBuffPeriod0.close();
-                    outBuffPeriod1.close();
-                    outBuffPeriod2.close();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            };
-
-            threadPoolExecutor.submit(countryRunnable);
-
-        }
-
-        System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
-
-        while (threadPoolExecutor.getActiveCount() > 0) {
-            TimeUnit.SECONDS.sleep(30);
-            System.out.println("Just woke up! ");
-            System.out.println("threadPoolExecutor.getActiveCount() = " + threadPoolExecutor.getActiveCount());
-        }
-        threadPoolExecutor.shutdown();
 
 
     }
