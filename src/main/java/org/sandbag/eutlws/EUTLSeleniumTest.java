@@ -156,7 +156,7 @@ public class EUTLSeleniumTest {
 
                 // Create a new instance of the Firefox driver
                 WebDriver driver = new HtmlUnitDriver();
-                WebDriverWait wait = new WebDriverWait(driver, 10);
+                WebDriverWait wait = new WebDriverWait(driver, 100);
 
                 //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
@@ -249,7 +249,7 @@ public class EUTLSeleniumTest {
 
                     // Create a new instance of the Firefox driver
                     WebDriver driver = new HtmlUnitDriver();
-                    WebDriverWait wait = new WebDriverWait(driver, 10);
+                    WebDriverWait wait = new WebDriverWait(driver, 100);
 
                     //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 
@@ -361,18 +361,16 @@ public class EUTLSeleniumTest {
                         driver.get(urlToGoBackTo);
 
                         nextButton = driver.findElement(By.name("nextList"));
-
+                        wait.until(ExpectedConditions.visibilityOf(nextButton));
 
                         if (nextButton.getAttribute("disabled") != null) {
                             endReached = true;
+                        }else{
+
+                            wait.until(ExpectedConditions.elementToBeClickable(nextButton));
+                            nextButton.click();
                         }
 
-                        System.out.println("URL now! " + driver.getCurrentUrl());
-                        WebDriverWait nextButtonWait = new WebDriverWait(driver, 10);
-                        wait.until(ExpectedConditions.elementToBeClickable(nextButton));
-
-                        nextButton.click();
-                        nextButton = driver.findElement(By.name("nextList"));
 
                         offsetsCounter++;
                         if(offsetsCounter % 20 == 0){
