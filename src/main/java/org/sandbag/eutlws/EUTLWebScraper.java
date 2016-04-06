@@ -1,5 +1,6 @@
 package org.sandbag.eutlws;
 
+import com.google.gson.Gson;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -17,11 +18,6 @@ import java.util.concurrent.TimeUnit;
  * Created by root on 07/03/16.
  */
 public class EUTLWebScraper {
-
-    public static String[] countriesArray = {"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB",
-            "GR", "HR", "HU", "IE", "IS", "IT", "LI", "LT", "LU", "LV", "MT", "NL", "NO", "PL", "PT", "RO", "SE",
-            "SI", "SK" };
-
 
     public static final String INSTALLATIONS_HEADER = "Country\tAccount Type\tAccount Holder Name\t" +
             "Company Registration Number\tAccount Status\tType\tCompany Name\tCompany Main Address\tCompany Secondary Address\t" +
@@ -65,38 +61,24 @@ public class EUTLWebScraper {
     public static void main(String[] args) throws Exception {
 
 
-        if (args.length != 9) {
+        if (args.length != 1) {
             System.out.println("This program expects the following parameters: " +
-                    "1. Installations folder \n " +
-                    "2. Aircraft operators folder \n" +
-                    "3. Compliance data folder\n" +
-                    "4. NER allocation data file name\n" +
-                    "5. Article 10c data file name\n" +
-                    "6. Installations Offset Entitlements File\n" +
-                    "7. Aircraft operators Offset Entitlements File\n" +
-                    "8. Offsets folder\n" +
-                    "9. Number of concurrent browsers (int)");
+                    "1. Config JSON file");
         } else {
 
-            String installationsFolderSt = args[0];
-            String aircraftOperatorsFolderSt = args[1];
-            String complianceDataFolderSt = args[2];
-            String nerAllocationFileSt = args[3];
-            String article10cFileSt = args[4];
-            String installationsOffsetEntitlementsFileSt = args[5];
-            String aircraftOperatorsOffsetEntitlementsFileSt = args[6];
-            String offsetsFolderSt = args[7];
-            int numberOfConcurrentBrowsers = Integer.parseInt(args[8]);
+            String configFileSt = args[0];
+
+            Gson gson = new Gson();
+            EUTLWebScraperConfig config = gson.fromJson(new BufferedReader(new FileReader(new File(configFileSt))), EUTLWebScraperConfig.class);
 
             //avoiding warning messages from WebDriver
             java.util.logging.Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.SEVERE);
 
 
-
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             //+++++++++++++++++++++++NER ALLOCATION FILE+++++++++++++++++++++++++++++++++++++++++++++
 
-            File nerAllocationFile = new File(nerAllocationFileSt);
+            File nerAllocationFile = new File(config.ner_file);
             BufferedWriter nerAllocOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nerAllocationFile),"UTF-8"));
             nerAllocOutBuff.write(NER_ALLOCATION_DATA_HEADER + "\n");
 
@@ -104,25 +86,27 @@ public class EUTLWebScraper {
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             //+++++++++++++++++++++++ARTICLE 10C FILE++++++++++++++++++++++++++++++++++++++++++++++++
 
-            File article10cFile = new File(article10cFileSt);
+            File article10cFile = new File(config.article10c_file);
             BufferedWriter article10cOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(article10cFile),"UTF-8"));
             article10cOutBuff.write(ARTICLE_10C_ALLOCATION_DATA_HEADER + "\n");
 
-            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(numberOfConcurrentBrowsers);
+            ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(config.number_of_threads);
 
-            getOffsetEntitlements(installationsOffsetEntitlementsFileSt,
-                    aircraftOperatorsOffsetEntitlementsFileSt,
+            getOffsetEntitlements(config.installations_offset_entitlements_file,
+                    config.aircraft_operators_offset_entitlements_file,
                     threadPoolExecutor);
 
-            getOffsets(offsetsFolderSt,
-                    threadPoolExecutor);
+            getOffsets(config.offsets_folder,
+                    threadPoolExecutor,
+                    config);
 
-            getOperatorHoldingAccounts(installationsFolderSt,
-                    aircraftOperatorsFolderSt,
-                    complianceDataFolderSt,
+            getOperatorHoldingAccounts(config.installation_folder,
+                    config.aircraft_operators_folder,
+                    config.compliance_folder,
                     nerAllocOutBuff,
                     article10cOutBuff,
-                    threadPoolExecutor);
+                    threadPoolExecutor,
+                    config);
 
             System.out.println("Maximum threads inside pool " + threadPoolExecutor.getMaximumPoolSize());
             while (threadPoolExecutor.getActiveCount() > 0) {
@@ -230,10 +214,11 @@ public class EUTLWebScraper {
 
 
     public static void getOffsets(String offsetsFolderSt,
-                                  ThreadPoolExecutor threadPoolExecutor) throws Exception {
+                                  ThreadPoolExecutor threadPoolExecutor,
+                                  EUTLWebScraperConfig config) throws Exception {
 
 
-        for (String countryCode : countriesArray) {
+        for (String countryCode : config.country_codes) {
 
             // Lambda Runnable
             Runnable countryRunnable = () -> {
@@ -403,10 +388,11 @@ public class EUTLWebScraper {
                                                   String complianceFolderSt,
                                                   BufferedWriter nerAllocOutBuff,
                                                   BufferedWriter article10cOutBuff,
-                                                  ThreadPoolExecutor threadPoolExecutor) throws Exception {
+                                                  ThreadPoolExecutor threadPoolExecutor,
+                                                  EUTLWebScraperConfig config) throws Exception {
 
 
-        for (String countryCode : countriesArray) {
+        for (String countryCode : config.country_codes) {
 
             // Lambda Runnable
             Runnable countryRunnable = () -> {
@@ -582,14 +568,13 @@ public class EUTLWebScraper {
                             WebElement currentRow = complianceRows.get(i);
                             List<WebElement> columns = currentRow.findElements(By.xpath("td"));
 
-                            String yearSt = columns.get(1).getText();
-                            String allowancesInAllocationSt = columns.get(2).getText();
-                            String verifiedEmissionsSt = columns.get(3).getText().replaceAll("\n", " ");
-                            String unitsSurrenderedSt = columns.get(4).getText().replaceAll("\n", " ");
+                            String yearSt = columns.get(1).getText().trim();
+                            String allowancesInAllocationSt = columns.get(2).getText().trim();
+                            String verifiedEmissionsSt = columns.get(3).getText().trim().replaceAll("\n", " ");
+                            String unitsSurrenderedSt = columns.get(4).getText().trim().replaceAll("\n", " ");
                             //String cumulativeSurrenderedUnitsSt = columns.get(5).getText();
                             //String cumulativeVerifiedEmissionsSt = columns.get(6).getText();
-                            String complianceCodeSt = columns.get(7).getText().replaceAll("\n", " ");
-
+                            String complianceCodeSt = columns.get(7).getText().trim().replaceAll("\n", " ");
 
                             String[] newLineSplit = allowancesInAllocationSt.split("\n");
 
@@ -628,10 +613,15 @@ public class EUTLWebScraper {
                                 allowancesInAllocationSt = newLineSplit[0].trim();
                             }
 
-                            //------------------STANDARD ALLOCATIONS---------------------
-                            installationsCompOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
-                                    allowancesInAllocationSt + "\t" + verifiedEmissionsSt + "\t" + unitsSurrenderedSt + "\t" +
-                                    complianceCodeSt + "\n");
+                            if(!allowancesInAllocationSt.isEmpty() || !verifiedEmissionsSt.isEmpty() ||
+                                    !unitsSurrenderedSt.isEmpty() || !complianceCodeSt.isEmpty()){
+
+
+                                //------------------STANDARD ALLOCATIONS---------------------
+                                installationsCompOutBuff.write(countryCode + "\t" + installationIdSt + "\t" + yearSt + "\t" +
+                                        allowancesInAllocationSt + "\t" + verifiedEmissionsSt + "\t" + unitsSurrenderedSt + "\t" +
+                                        complianceCodeSt + "\n");
+                            }
 
 
                         }

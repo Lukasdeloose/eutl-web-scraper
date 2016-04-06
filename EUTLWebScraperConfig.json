@@ -9,6 +9,6 @@
     "compliance_folder":"/home/pablo/sandbag/EUTL_data/web_scrape/installations/compliance",
     "ner_file":"/home/pablo/sandbag/EUTL_data/web_scrape/NER.tsv",
     "article10c_file":"/home/pablo/sandbag/EUTL_data/web_scrape/article10c.tsv",
-    "installations_offset_entitlements":"/home/pablo/sandbag/EUTL_data/web_scrape/InstallationsEntitlements.tsv",
-    "aircraft_operators_entitlements":"/home/pablo/sandbag/EUTL_data/web_scrape/AircraftOperatorsEntitlements.tsv"
+    "installations_offset_entitlements_file":"/home/pablo/sandbag/EUTL_data/web_scrape/InstallationsEntitlements.tsv",
+    "aircraft_operators_offset_entitlements_file":"/home/pablo/sandbag/EUTL_data/web_scrape/AircraftOperatorsEntitlements.tsv"
 }
