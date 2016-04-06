@@ -18,10 +18,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class EUTLSeleniumTest {
 
-    public static String[] countriesArray = {"AT", "BE", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU",
-            "IS", "IE", "IT", "LV", "LI", "LT", "LU", "MT", "NL", "NO", "PL", "PT", "RO",
-            "SK", "SI", "ES", "SE", "GB"};
-//    public static String[] countriesArray = {"GR"};
+    public static String[] countriesArray = {"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB",
+            "GR", "HR", "HU", "IE", "IS", "IT", "LI", "LT", "LU", "LV", "MT", "NL", "NO", "PL", "PT", "RO", "SE",
+            "SI", "SK" };
+
 
     public static final String INSTALLATIONS_HEADER = "Country\tAccount Type\tAccount Holder Name\t" +
             "Company Registration Number\tAccount Status\tType\tCompany Name\tCompany Main Address\tCompany Secondary Address\t" +
