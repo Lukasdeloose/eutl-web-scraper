@@ -31,7 +31,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.sandbag.eutlws.EUTLSeleniumTest</mainClass>
+                            <mainClass>org.sandbag.eutlws.EUTLWebScraper</mainClass>
                             <classpathPrefix>lib/</classpathPrefix>
                         </manifest>
                     </archive>

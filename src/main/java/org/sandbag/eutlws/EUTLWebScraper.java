@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by root on 07/03/16.
  */
-public class EUTLSeleniumTest {
+public class EUTLWebScraper {
 
     public static String[] countriesArray = {"AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GB",
             "GR", "HR", "HU", "IE", "IS", "IT", "LI", "LT", "LU", "LV", "MT", "NL", "NO", "PL", "PT", "RO", "SE",
