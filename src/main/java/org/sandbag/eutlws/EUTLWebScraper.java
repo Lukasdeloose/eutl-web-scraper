@@ -79,6 +79,7 @@ public class EUTLWebScraper {
             //+++++++++++++++++++++++NER ALLOCATION FILE+++++++++++++++++++++++++++++++++++++++++++++
 
             File nerAllocationFile = new File(config.ner_file);
+            nerAllocationFile.createNewFile();
             BufferedWriter nerAllocOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(nerAllocationFile),"UTF-8"));
             nerAllocOutBuff.write(NER_ALLOCATION_DATA_HEADER + "\n");
 
@@ -87,6 +88,7 @@ public class EUTLWebScraper {
             //+++++++++++++++++++++++ARTICLE 10C FILE++++++++++++++++++++++++++++++++++++++++++++++++
 
             File article10cFile = new File(config.article10c_file);
+            article10cFile.createNewFile();
             BufferedWriter article10cOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(article10cFile),"UTF-8"));
             article10cOutBuff.write(ARTICLE_10C_ALLOCATION_DATA_HEADER + "\n");
 
@@ -127,10 +129,12 @@ public class EUTLWebScraper {
                                              ThreadPoolExecutor threadPoolExecutor) throws Exception {
 
         File installationsFile = new File(installationsOffsetEntitlementsFSt);
+        installationsFile.createNewFile();
         BufferedWriter installationsBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(installationsFile),"UTF-8"));
         installationsBuff.write(OFFSET_ENTITLEMENTS_INSTALLATIONS_DATA_HEADER + "\n");
 
         File aircrafOpsFile = new File(aircraftOperatorsOffsetEntitlementsFileSt);
+        aircrafOpsFile.createNewFile();
         BufferedWriter aircraftOpsBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(aircrafOpsFile),"UTF-8"));
         aircraftOpsBuff.write(OFFSET_ENTITLEMENTS_AIRCRAFT_OPERATORS_DATA_HEADER + "\n");
 
@@ -229,6 +233,7 @@ public class EUTLWebScraper {
                     System.out.println("(Offsets) countryCode = " + countryCode);
 
                     File offsetsDataFile = new File(offsetsFolderSt + "/" + countryCode + ".csv");
+                    offsetsDataFile.createNewFile();
                     BufferedWriter offsetsBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(offsetsDataFile),"UTF-8"));
                     offsetsBuff.write(OFFSETS_HEADER + "\n");
 
@@ -403,14 +408,17 @@ public class EUTLWebScraper {
                     System.out.println("Get OHAs countryCode = " + countryCode);
 
                     File installationsFile = new File(installationsFolderSt + "/" + countryCode + ".csv");
+                    installationsFile.createNewFile();
                     BufferedWriter installationsOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(installationsFile),"UTF-8"));
                     installationsOutBuff.write(INSTALLATIONS_HEADER + "\n");
 
                     File aircraftOpsFile = new File(aircraftOpsFolderSt + "/" + countryCode + ".csv");
+                    aircraftOpsFile.createNewFile();
                     BufferedWriter aircraftOpsOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(aircraftOpsFile),"UTF-8"));
                     aircraftOpsOutBuff.write(AIRCRAFT_OPERATORS_HEADER + "\n");
 
                     File installationsCompDataFile = new File(complianceFolderSt + "/" + countryCode + ".csv");
+                    installationsCompDataFile.createNewFile();
                     BufferedWriter installationsCompOutBuff = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(installationsCompDataFile),"UTF-8"));
                     installationsCompOutBuff.write(INSTALLATIONS_COMPLIANCE_DATA_HEADER + "\n");
 
