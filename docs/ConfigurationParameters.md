@@ -25,3 +25,13 @@ Here is a sample content for the file [EUTLWebScraperConfig.json](/EUTLWebScrape
 
 > Be careful when setting values higher than 3/4 threads since the European Commission site tends to cut off the connection when many threads are performing requests at once.
 
+* **country_codes**: Array of String values including the _(ISO 3166-2)_ country codes for which information will be retrieved.
+* **installations_folder**: Folder for installations files.
+* **aircraft_operators_folder**: Folder for aircraft operators files.
+* **offsets_folder**: Folder for offsets files.
+* **compliance_folder**: Folder for compliance information files.
+* **ner_file**: TSV file where allocations of type _NER_ will be stored.
+* **article10c_file**: TSV file where allocations of type _Article 10c_ will be stored. 
+* **installations_offset_entitlements_file**: TSV file for information pertaining to installations' offset entitlements.
+* **aircraft_operators_offset_entitlements_file**: TSV file for information pertaining to aircraft operators' offset entitlements.
+
