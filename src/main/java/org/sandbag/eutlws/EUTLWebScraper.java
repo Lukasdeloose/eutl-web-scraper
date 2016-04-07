@@ -100,7 +100,7 @@ public class EUTLWebScraper {
                     threadPoolExecutor,
                     config);
 
-            getOperatorHoldingAccounts(config.installation_folder,
+            getOperatorHoldingAccounts(config.installations_folder,
                     config.aircraft_operators_folder,
                     config.compliance_folder,
                     nerAllocOutBuff,

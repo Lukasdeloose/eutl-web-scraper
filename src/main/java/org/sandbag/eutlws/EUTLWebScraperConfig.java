@@ -7,7 +7,7 @@ public class EUTLWebScraperConfig {
 
     public int number_of_threads;
     public String[] country_codes;
-    public String installation_folder;
+    public String installations_folder;
     public String aircraft_operators_folder;
     public String compliance_folder;
     public String offsets_folder;
