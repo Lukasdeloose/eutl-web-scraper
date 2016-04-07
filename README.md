@@ -15,7 +15,7 @@ Here is a detailed description of the different steps to follow in order to run 
 
   Preferably a **m3.medium** or more powerful instance type 
     
-    _(**m3.medium specs**: vCPU: 1 	Mem(GiB): 3.75	SSD Storage (GB):	1 x 4)_ 
+    m3.medium specs: vCPU: 1 	Mem(GiB): 3.75	SSD Storage (GB):	1 x 4 
 
 ## [Data quality checks](docs/QualityChecks.md)
 
