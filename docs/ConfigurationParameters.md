@@ -19,3 +19,8 @@ Here is a sample content for the file [EUTLWebScraperConfig.json](/EUTLWebScrape
 }
 ```
 
+### Parameters
+
+* **number_of_threads**: Integer indicating the maximum total number of parallel threads running at any time. 
+   > Be careful when setting values higher than 3/4 threads since the European Commission site tends to cut off the connection when many threads are performing requests at once.
+
