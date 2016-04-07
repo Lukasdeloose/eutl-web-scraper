@@ -1,5 +1,7 @@
 ## How to run the Web Scraper
 
+Here's a step-by-step guide on how to run the Web Scraper:
+
 ### 1. Get the following files
 
 * **eutl-web-scraper.jar** _(located [here](/dist/eutl-web-scraper.jar))_
