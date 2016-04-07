@@ -17,6 +17,17 @@ Here is a detailed description of the different steps to follow in order to run 
     
     m3.medium specs: vCPU: 1 	Mem(GiB): 3.75	SSD Storage (GB):	1 x 4 
 
+### 3. Create a few folders:
+  
+  Create the following directory structure:
+  
+```.
++-- installations
++-- aircraft_operators
++-- offsets
++-- compliance
+```
+
 ## [Data quality checks](docs/QualityChecks.md)
 
 
