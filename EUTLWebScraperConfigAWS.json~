@@ -5,7 +5,7 @@
       "SI", "SK"],
     "intallations_folder":"./web_scrape/installations",
     "aircraft_operators_folder":"./web_scrape/aircraft_operators",
-    "offsets_folder":"./EUTL_data/web_scrape/offsets",
+    "offsets_folder":"./web_scrape/offsets",
     "compliance_folder":"./web_scrape/compliance",
     "ner_file":"./web_scrape/ner.tsv",
     "article10c_file":"./web_scrape/article10c.tsv",
