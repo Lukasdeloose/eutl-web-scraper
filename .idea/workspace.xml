@@ -6,12 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c17a59ce-cdcd-4552-a644-f63b37401068" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/artifacts/eutl_web_scraper_jar/eutl-web-scraper.jar" afterPath="$PROJECT_DIR$/out/artifacts/eutl_web_scraper_jar/eutl-web-scraper.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/EUTLWebScraperConfig.json" afterPath="$PROJECT_DIR$/EUTLWebScraperConfig.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java" afterPath="$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java" />
-    </list>
+    <list default="true" id="c17a59ce-cdcd-4552-a644-f63b37401068" name="Default" comment="" />
     <ignored path="eutl-web-scraper.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -37,7 +32,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.2890625">
-              <caret line="80" column="63" selection-start-line="80" selection-start-column="63" selection-end-line="80" selection-end-column="63" />
+              <caret line="80" column="61" selection-start-line="80" selection-start-column="61" selection-end-line="80" selection-end-column="61" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <marker date="1460027710628" expanded="true" signature="5412:5709" placeholder="..." />
@@ -1099,7 +1094,7 @@
     <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.2890625">
-          <caret line="80" column="63" selection-start-line="80" selection-start-column="63" selection-end-line="80" selection-end-column="63" />
+          <caret line="80" column="61" selection-start-line="80" selection-start-column="61" selection-end-line="80" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
             <marker date="1460027710628" expanded="true" signature="5412:5709" placeholder="..." />
