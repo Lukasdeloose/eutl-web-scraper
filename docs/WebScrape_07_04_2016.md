@@ -1,6 +1,7 @@
 ## Tests performed
 
 - [x] All countries from the European Union (+3) exist
+- [x] DataQualityChecks program executed successfully _(only the problematic ID: HR200696 could not be found)_
 - [ ] Total number of installations per country: 
 
 | Country ID | Number of installations | Number of Aircraft Operators | Installations + Aircraft Operators (Database) | EUTL total  |
