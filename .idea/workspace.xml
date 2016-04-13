@@ -28,26 +28,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="450">
-      <file leaf-file-name="EUTLWebScraper.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="EUTLWebScraper.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.1463413">
+            <state vertical-scroll-proportion="0.026347306">
               <caret line="145" column="56" selection-start-line="144" selection-start-column="16" selection-end-line="145" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <marker date="1460027710628" expanded="true" signature="5412:5709" placeholder="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GetLordsEmailsScraper.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/GetLordsEmailsScraper.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.69008785">
-              <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
-              <folding>
-                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -97,9 +85,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="38" />
     <option name="width" value="1920" />
-    <option name="height" value="1042" />
+    <option name="height" value="1080" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -126,9 +113,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -243,6 +227,9 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -526,7 +513,7 @@
     <configuration />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="38" width="1920" height="1042" extended-state="6" />
+    <frame x="0" y="0" width="1920" height="1080" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1065,23 +1052,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/GetLordsEmailsScraper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.1463413">
-          <caret line="145" column="56" selection-start-line="144" selection-start-column="16" selection-end-line="145" selection-end-column="56" />
+        <state vertical-scroll-proportion="0.65868264">
+          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <marker date="1460027710628" expanded="true" signature="5412:5709" placeholder="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/GetLordsEmailsScraper.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.69008785">
-          <caret line="25" column="8" selection-start-line="25" selection-start-column="8" selection-end-line="25" selection-end-column="8" />
+        <state vertical-scroll-proportion="0.026347306">
+          <caret line="145" column="56" selection-start-line="144" selection-start-column="16" selection-end-line="145" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
+            <marker date="1460027710628" expanded="true" signature="5412:5709" placeholder="..." />
           </folding>
         </state>
       </provider>
