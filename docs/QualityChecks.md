@@ -3,6 +3,7 @@
  * All countries from the European Union exist (make sure all included in the scrape files and data export files)
  * Number of _**total installations and aircraft operators per country**_ is consistent with that shown in the EUTL website
  * Make sure all columns in data export files are populated as expected (do quick totals check compared to previous scrapes)
+ * Run the test programs included in the class: [DataQualityChecks](https://github.com/sandbag-climate/eutldb/blob/master/src/test/java/org/sandbag/eutldb/tests/DataQualityChecks.java)
  
 
-### [Web Scrape 01/04/2016](/docs/WebScrape_07_04_2016.md)
+### [Web Scrape 07/04/2016](/docs/WebScrape_07_04_2016.md)
