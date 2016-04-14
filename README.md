@@ -5,4 +5,6 @@ New version of the EUTL web scraper
 
 ## [Data quality checks](/docs/QualityChecks.md)
 
+## [Issues/bugs found on EUTL data](/docs/IssuesWithEUTLdata.md)
+
 
