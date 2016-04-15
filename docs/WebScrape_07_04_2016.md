@@ -44,3 +44,15 @@ There are four installations missing:
 * [UK207723](http://ec.europa.eu/environment/ets/ohaDetails.do?returnURL=&languageCode=en&accountID=&registryCode=&buttonAction=all&action=&account.registryCode=&accountType=&identifierInReg=&accountHolder=&primaryAuthRep=&installationIdentifier=&installationName=&accountStatus=&permitIdentifier=&complianceStatus=&mainActivityType=-1&searchType=oha&account.registryCodes=GB&resultList.currentPageNumber=1764&nextList=Next%C2%A0%3E&selectedPeriods=) _No compliance data included in the EUTL website_
 * [IT207704](http://ec.europa.eu/environment/ets/ohaDetails.do?returnURL=&languageCode=en&accountID=&registryCode=&buttonAction=all&action=&account.registryCode=&accountType=&identifierInReg=&accountHolder=&primaryAuthRep=&installationIdentifier=&installationName=&accountStatus=&permitIdentifier=&complianceStatus=&mainActivityType=-1&searchType=oha&account.registryCodes=IT&resultList.currentPageNumber=1575&nextList=Next%C2%A0%3E&selectedPeriods=) _Just one value as part of its compliance data (Verified Emissions for 2015), perhaps it has been updated since the moment when the Web Scraper was executed. We should check this installation again whenever the Web Scraper is executed again..._
 * [NO207728](http://ec.europa.eu/environment/ets/ohaDetails.do?returnURL=&languageCode=en&accountID=&registryCode=&buttonAction=all&action=&account.registryCode=&accountType=&identifierInReg=&accountHolder=&primaryAuthRep=&installationIdentifier=&installationName=&accountStatus=&permitIdentifier=&complianceStatus=&mainActivityType=-1&searchType=oha&account.registryCodes=NO&resultList.currentPageNumber=175&nextList=Next%C2%A0%3E&selectedPeriods=) _No compliance data included in the EUTL website_
+
+- [x]  All previously included keys included in the new file 1
+- [ ]  All previously included keys for offset records and offset entitlement records are covered in the latest scrape files (files 2 & 3)
+- [ ]  Free allocation totals per member state for the new file 1 
+     * Estonia Phase3 std + 10c doesn't match
+     * France Phase3 std doesn't match
+     * Germany Phase3 std doesn't match
+     * Italy Phase3 std doesn't match
+     * Norway Phase3 std doesn't match
+     * Romania Phase3 std doesn't match
+     * United Kingdom Phase2 std & Phase3 std don't match
+  
