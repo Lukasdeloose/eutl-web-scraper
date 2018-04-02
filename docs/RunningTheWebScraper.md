@@ -41,5 +41,5 @@ java -d64 -Xmx2G -jar eutl-web-scraper.jar EUTLWebScraperConfig.json
 
 ### 5. Possible problems during scrape
 
-There is chance that some installations will not have all the data required by the scraper. Such case was with the installation FR431 where Details on Contact Information were missing (and as of April 2nd 2018, the problem is not fixed on the EUTL website). For such cases the scraper will leave the fields in the output file empty, and those have to be filled in manually, before starting the database generator. If new empty fields cause the scraper to crash, a fix has to be implemented in the scraper class _(located [here](/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java))_ similar to one starting in the line 471.
+There is a chance that some installations will not have all the data required by the scraper. Such case was with the installation FR431 where Details on Contact Information were missing (and as of April 2nd 2018, the problem is not fixed on the EUTL website). For such cases the scraper will leave the fields in the output file empty, and those have to be filled in manually, before starting the database generator. If new empty fields cause the scraper to crash, a fix has to be implemented in the scraper class _(located [here](/src/main/java/org/sandbag/eutlws/EUTLWebScraper.java))_ similar to one starting in the line 471.
 
