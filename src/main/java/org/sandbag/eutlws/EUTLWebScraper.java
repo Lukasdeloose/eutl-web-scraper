@@ -460,17 +460,26 @@ public class EUTLWebScraper {
                         //================================================================================
                         WebElement tableContactInfo = driver.findElement(By.id("tblAccountContactInfo"));
                         List<WebElement> tr_collection_account_contact_info = tableContactInfo.findElements(By.xpath("id('tblAccountContactInfo')/tbody/tr"));
-                        validRow = tr_collection_account_contact_info.get(2);
-                        td_collection = validRow.findElements(By.xpath("td"));
 
-                        String companyTypeSt = td_collection.get(0).getText();
-                        String companyNameSt = td_collection.get(1).getText();
-                        String companyMainAddressSt = td_collection.get(2).getText();
-                        String companySecondaryAddressSt = td_collection.get(3).getText();
-                        String companyPostalCodeSt = td_collection.get(4).getText();
-                        String companyCitySt = td_collection.get(5).getText();
-                        //String countryNameSt = td_collection.get(6).getText();
+                        String companyTypeSt = "";
+                        String companyNameSt = "";
+                        String companyMainAddressSt = "";
+                        String companySecondaryAddressSt = "";
+                        String companyPostalCodeSt = "";
+                        String companyCitySt = "";
 
+                        if(tr_collection_account_contact_info.size() > 2) {
+                            validRow = tr_collection_account_contact_info.get(2);
+                            td_collection = validRow.findElements(By.xpath("td"));
+
+                            companyTypeSt = td_collection.get(0).getText();
+                            companyNameSt = td_collection.get(1).getText();
+                            companyMainAddressSt = td_collection.get(2).getText();
+                            companySecondaryAddressSt = td_collection.get(3).getText();
+                            companyPostalCodeSt = td_collection.get(4).getText();
+                            companyCitySt = td_collection.get(5).getText();
+                            //String countryNameSt = td_collection.get(6).getText();
+                        }
 
                         String contentToBeWrittenSt = nationalAdministratorSt + "\t" + accountTypeSt + "\t" + accountHolderNameSt + "\t" +
                                 companyRegistrationNumberSt + "\t" + accountStatus + "\t";
